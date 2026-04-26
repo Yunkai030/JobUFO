@@ -33,7 +33,25 @@ export async function updateSession(request: NextRequest) {
   )
 
   // Required: refreshes the auth token on every request.
-  await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const { pathname } = request.nextUrl
+  const isProtected = pathname.startsWith('/dashboard')
+  const isAuthRoute = pathname === '/login' || pathname === '/signup'
+
+  if (!user && isProtected) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
+  }
+
+  if (user && isAuthRoute) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/dashboard'
+    return NextResponse.redirect(url)
+  }
 
   return supabaseResponse
 }
