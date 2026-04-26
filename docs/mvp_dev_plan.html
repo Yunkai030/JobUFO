@@ -1,0 +1,520 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --purple: #534AB7; --purple-light: #EEEDFE; --purple-mid: #7F77DD; --purple-dark: #3C3489;
+  --teal: #1D9E75; --teal-light: #E1F5EE; --teal-dark: #085041;
+  --amber: #BA7517; --amber-light: #FAEEDA;
+  --red: #A32D2D; --red-light: #FCEBEB;
+  --green: #3B6D11; --green-light: #EAF3DE;
+}
+.wrap { padding: 1.5rem; font-family: var(--font-sans, sans-serif); }
+
+.tab-row { display: flex; gap: 6px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.tab { padding: 7px 16px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; border: 0.5px solid var(--color-border-secondary); color: var(--color-text-secondary); background: transparent; transition: all .15s; }
+.tab.active { background: var(--purple-light); color: var(--purple-dark); border-color: var(--purple-mid); }
+.tab:hover:not(.active) { background: var(--color-background-secondary); }
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+.week-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 1.25rem; padding-bottom: .75rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.week-num { font-size: 11px; font-weight: 500; letter-spacing: .07em; color: var(--purple-mid); text-transform: uppercase; }
+.week-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+.week-goal { font-size: 12px; color: var(--color-text-secondary); background: var(--color-background-secondary); border-radius: var(--border-radius-md, 8px); padding: 8px 12px; margin-bottom: 1.25rem; line-height: 1.6; }
+.week-goal strong { color: var(--color-text-primary); font-weight: 500; }
+
+.day-block { margin-bottom: 1rem; }
+.day-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+.task-list { display: flex; flex-direction: column; gap: 5px; }
+.task { display: flex; gap: 10px; align-items: flex-start; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md, 8px); padding: 9px 12px; cursor: pointer; transition: border-color .15s; }
+.task:hover { border-color: var(--color-border-secondary); }
+.task.done { opacity: .5; }
+.task.done .task-title { text-decoration: line-through; }
+.cb { width: 16px; height: 16px; border: 1.5px solid var(--color-border-secondary); border-radius: 4px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+.task.done .cb { background: var(--purple); border-color: var(--purple); }
+.cb-check { width: 8px; height: 6px; border-left: 1.5px solid #fff; border-bottom: 1.5px solid #fff; transform: rotate(-45deg) translateY(-1px); display: none; }
+.task.done .cb-check { display: block; }
+.task-body { flex: 1; min-width: 0; }
+.task-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+.task-desc { font-size: 11px; color: var(--color-text-secondary); line-height: 1.5; }
+.tag { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 20px; margin-left: 6px; vertical-align: middle; }
+.tag-fe { background: var(--purple-light); color: var(--purple-dark); }
+.tag-be { background: var(--teal-light); color: var(--teal-dark); }
+.tag-ai { background: var(--amber-light); color: var(--amber); }
+.tag-db { background: #E6F1FB; color: #0C447C; }
+.tag-test { background: var(--green-light); color: var(--green); }
+.tag-ship { background: var(--red-light); color: var(--red); }
+
+.progress-bar-wrap { margin-bottom: 1.5rem; }
+.progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 6px; }
+.progress-track { height: 6px; background: var(--color-background-secondary); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--purple-mid); border-radius: 3px; transition: width .3s; }
+
+.code-block { background: var(--color-background-secondary); border-radius: var(--border-radius-md, 8px); padding: 12px 14px; font-family: var(--font-mono, monospace); font-size: 11px; color: var(--color-text-primary); line-height: 1.65; overflow-x: auto; margin-bottom: .75rem; border: 0.5px solid var(--color-border-tertiary); white-space: pre; }
+.code-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; font-weight: 500; }
+
+.arch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-bottom: 1.25rem; }
+.arch-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md, 8px); padding: .75rem .9rem; }
+.arch-card .layer { font-size: 10px; color: var(--color-text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+.arch-card .name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+.arch-card .why { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+
+.schema-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: .75rem; }
+.schema-table th { background: var(--color-background-secondary); padding: 6px 10px; text-align: left; color: var(--color-text-secondary); font-weight: 500; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.schema-table td { padding: 6px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); font-family: var(--font-mono, monospace); font-size: 11px; }
+.schema-table tr:last-child td { border-bottom: none; }
+.type { color: var(--purple-mid); }
+.pk { color: var(--amber); font-size: 10px; font-weight: 500; }
+.fk { color: var(--teal); font-size: 10px; font-weight: 500; }
+
+.api-row { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md, 8px); padding: 10px 12px; margin-bottom: 6px; display: flex; gap: 10px; align-items: flex-start; }
+.method { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 4px; flex-shrink: 0; font-family: var(--font-mono, monospace); }
+.method.post { background: #EAF3DE; color: #3B6D11; }
+.method.get { background: #E6F1FB; color: #0C447C; }
+.api-path { font-size: 12px; font-weight: 500; color: var(--color-text-primary); font-family: var(--font-mono, monospace); }
+.api-desc { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+
+.prompt-box { background: var(--amber-light); border: 0.5px solid var(--amber); border-radius: var(--border-radius-md, 8px); padding: 12px 14px; margin-bottom: .75rem; }
+.prompt-box .prompt-label { font-size: 10px; font-weight: 500; color: var(--amber); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+.prompt-box p { font-size: 12px; color: var(--amber); line-height: 1.6; font-family: var(--font-mono, monospace); }
+
+.deliverable { display: flex; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 13px; }
+.deliverable:last-child { border-bottom: none; }
+.del-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.del-green { background: var(--teal); }
+.del-purple { background: var(--purple); }
+.del-amber { background: var(--amber); }
+.section-h { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 1.25rem 0 .6rem; }
+</style>
+
+<div class="wrap">
+  <h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">JobUFO MVP 4周开发计划，包含每日任务、数据库设计、API设计和Claude提示词</h2>
+
+  <div class="tab-row" id="tabs">
+    <button class="tab active" onclick="switchTab('w1')">Week 1 · 骨架</button>
+    <button class="tab" onclick="switchTab('w2')">Week 2 · Resume Builder</button>
+    <button class="tab" onclick="switchTab('w3')">Week 3 · ATS Check</button>
+    <button class="tab" onclick="switchTab('w4')">Week 4 · 收尾上线</button>
+    <button class="tab" onclick="switchTab('arch')">DB + API 设计</button>
+    <button class="tab" onclick="switchTab('prompt')">Claude Prompts</button>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-label"><span id="prog-label">Week 1 进度</span><span id="prog-pct">0 / 0</span></div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+
+  <!-- WEEK 1 -->
+  <div class="panel active" id="panel-w1">
+    <div class="week-header">
+      <span class="week-num">Week 1</span>
+      <span class="week-title">项目骨架 + Auth + Landing</span>
+    </div>
+    <div class="week-goal">
+      <strong>本周交付目标：</strong>项目跑起来，用户能注册登录，有一个能收邮件的 Landing Page。不要急着做功能，先把基础设施打好。<br>
+      <strong>验收标准：</strong>朋友能打开页面、注册账号、看到 Dashboard 空页面。
+    </div>
+
+    <div class="day-block">
+      <div class="day-label">Day 1 · 项目初始化</div>
+      <div class="task-list">
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">初始化 Next.js 14 项目 <span class="tag tag-fe">前端</span></div><div class="task-desc">npx create-next-app@latest jobufo --typescript --tailwind --app，选 App Router</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">配置 Supabase 项目 <span class="tag tag-db">DB</span></div><div class="task-desc">supabase.com 新建项目，记好 URL + anon key，装 @supabase/supabase-js</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">配置 shadcn/ui <span class="tag tag-fe">前端</span></div><div class="task-desc">npx shadcn-ui@latest init，选 default style，装 Button/Input/Card/Form</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">推到 GitHub + 部署到 Vercel <span class="tag tag-ship">上线</span></div><div class="task-desc">Vercel 连 GitHub repo，环境变量配好 NEXT_PUBLIC_SUPABASE_URL + SUPABASE_ANON_KEY</div></div></div>
+      </div>
+    </div>
+
+    <div class="day-block">
+      <div class="day-label">Day 2 · Auth 系统</div>
+      <div class="task-list">
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">Supabase Auth 接入 <span class="tag tag-be">后端</span></div><div class="task-desc">用 @supabase/auth-helpers-nextjs，实现 Email/Password 注册登录，配 middleware 保护路由</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">登录/注册页面 UI <span class="tag tag-fe">前端</span></div><div class="task-desc">/login 和 /signup 页面，用 shadcn Form，完成后跳 /dashboard</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">用户 profile 表 <span class="tag tag-db">DB</span></div><div class="task-desc">在 Supabase 建 profiles 表（id, name, email, created_at），Auth trigger 自动创建</div></div></div>
+      </div>
+    </div>
+
+    <div class="day-block">
+      <div class="day-label">Day 3–4 · Landing Page</div>
+      <div class="task-list">
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">Landing Page Hero 区 <span class="tag tag-fe">前端</span></div><div class="task-desc">产品名 + 一句话价值主张 + CTA 按钮（免费开始）+ 邮件收集 input</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">Features 展示区 <span class="tag tag-fe">前端</span></div><div class="task-desc">三个核心功能卡片：Resume Builder / ATS Check / Application Tracker</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">waitlist 邮件收集 API <span class="tag tag-be">后端</span></div><div class="task-desc">/api/waitlist POST，存 Supabase waitlist 表，发确认邮件（Resend 免费额度）</div></div></div>
+      </div>
+    </div>
+
+    <div class="day-block">
+      <div class="day-label">Day 5 · Dashboard 骨架</div>
+      <div class="task-list">
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">Dashboard layout + sidebar <span class="tag tag-fe">前端</span></div><div class="task-desc">左侧导航：Resume / ATS Check / Applications。顶部 user avatar + 退出。受保护路由。</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">Week 1 内测发布 <span class="tag tag-test">测试</span></div><div class="task-desc">发给 3 个朋友，让他们注册并提交 waitlist。收集第一波反馈。</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 2 -->
+  <div class="panel" id="panel-w2">
+    <div class="week-header">
+      <span class="week-num">Week 2</span>
+      <span class="week-title">Resume Builder MVP</span>
+    </div>
+    <div class="week-goal">
+      <strong>本周交付目标：</strong>用户能创建简历、填写各模块内容、实时预览、导出 PDF。不需要很多模板，一个好看的就够。<br>
+      <strong>验收标准：</strong>自己能用它做出一份真实的简历并导出 PDF。
+    </div>
+
+    <div class="day-block">
+      <div class="day-label">Day 1 · 数据结构</div>
+      <div class="task-list">
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">建 resumes 表 + resume_sections 表 <span class="tag tag-db">DB</span></div><div class="task-desc">resumes(id, user_id, title, template, updated_at)，sections 存 JSONB（灵活扩展）</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">定义简历数据 Schema (TypeScript) <span class="tag tag-fe">前端</span></div><div class="task-desc">ResumeData 类型：personal_info, education[], experience[], skills[], projects[]</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">CRUD API routes <span class="tag tag-be">后端</span></div><div class="task-desc">/api/resumes GET/POST，/api/resumes/[id] GET/PUT/DELETE，加 auth 验证</div></div></div>
+      </div>
+    </div>
+
+    <div class="day-block">
+      <div class="day-label">Day 2–3 · 编辑器界面</div>
+      <div class="task-list">
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">左侧编辑面板 - 个人信息 <span class="tag tag-fe">前端</span></div><div class="task-desc">姓名/邮件/电话/LinkedIn/地点，用 react-hook-form + zod 校验</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">动态 Section：工作经历 / 教育 <span class="tag tag-fe">前端</span></div><div class="task-desc">可增删的 array field，每条记录有公司/职位/日期/描述。用 useFieldArray (react-hook-form)</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">技能 / 项目 Section <span class="tag tag-fe">前端</span></div><div class="task-desc">技能用 tag input（可添加删除），项目同工作经历结构</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">自动保存 (debounce 2s) <span class="tag tag-be">后端</span></div><div class="task-desc">表单变化后 2 秒自动 PUT，顶部显示"已保存"状态</div></div></div>
+      </div>
+    </div>
+
+    <div class="day-block">
+      <div class="day-label">Day 4 · 右侧预览</div>
+      <div class="task-list">
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">实时预览组件 <span class="tag tag-fe">前端</span></div><div class="task-desc">右侧 A4 比例 div，React 直接渲染简历模板（不用 iframe），数据实时同步左侧</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">设计一个干净的简历模板 <span class="tag tag-fe">前端</span></div><div class="task-desc">参考 Jake's Resume 风格：单栏，serif 名字，section divider，紧凑但有呼吸感</div></div></div>
+      </div>
+    </div>
+
+    <div class="day-block">
+      <div class="day-label">Day 5 · PDF 导出</div>
+      <div class="task-list">
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">PDF 导出 API <span class="tag tag-be">后端</span></div><div class="task-desc">/api/resumes/[id]/export，用 @react-pdf/renderer 或 puppeteer（Vercel 推荐前者）</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">导出按钮 + 下载逻辑 <span class="tag tag-fe">前端</span></div><div class="task-desc">点击"导出 PDF"，请求 API，blob 下载。加 loading 状态。</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">Week 2 内测：自己做一份真实简历 <span class="tag tag-test">测试</span></div><div class="task-desc">用 JobUFO 重新做一份你自己的简历，记录所有卡顿点和 bug</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 3 -->
+  <div class="panel" id="panel-w3">
+    <div class="week-header">
+      <span class="week-num">Week 3</span>
+      <span class="week-title">ATS Check + Claude AI</span>
+    </div>
+    <div class="week-goal">
+      <strong>本周交付目标：</strong>用户粘贴 JD，系统给出 0–100 分 + 具体的关键词缺失分析 + AI 改写建议。这是产品最核心的"wow moment"，要做得足够有用。<br>
+      <strong>验收标准：</strong>给同一份简历测试三个不同 JD，分数有明显差异，建议具体可执行。
+    </div>
+
+    <div class="day-block">
+      <div class="day-label">Day 1 · ATS 分析引擎</div>
+      <div class="task-list">
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">JD 关键词提取逻辑 <span class="tag tag-be">后端</span></div><div class="task-desc">/api/ats/extract-keywords，接收 JD 文本，用 Claude API 提取：技能词/职位词/动词/资质要求</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">关键词匹配算法 <span class="tag tag-be">后端</span></div><div class="task-desc">简历文本 vs JD 关键词列表，计算：命中数/总数×100 = 基础分，加权（技能词权重更高）</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">建 ats_results 表 <span class="tag tag-db">DB</span></div><div class="task-desc">存储每次分析结果，方便历史对比（resume_id, jd_text, score, keywords_matched, suggestions, created_at）</div></div></div>
+      </div>
+    </div>
+
+    <div class="day-block">
+      <div class="day-label">Day 2 · Claude API 集成</div>
+      <div class="task-list">
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">接入 Anthropic SDK <span class="tag tag-ai">AI</span></div><div class="task-desc">npm install @anthropic-ai/sdk，配 ANTHROPIC_API_KEY 环境变量（只放服务端）</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">ATS 分析主 Prompt <span class="tag tag-ai">AI</span></div><div class="task-desc">设计 System Prompt（见 Prompts Tab），返回结构化 JSON：score, matched, missing, suggestions[]</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">Streaming 响应 <span class="tag tag-ai">AI</span></div><div class="task-desc">用 Claude streaming API，前端用 ReadableStream 实时展示分析过程，避免白屏等待</div></div></div>
+      </div>
+    </div>
+
+    <div class="day-block">
+      <div class="day-label">Day 3–4 · ATS 结果 UI</div>
+      <div class="task-list">
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">ATS Check 页面布局 <span class="tag tag-fe">前端</span></div><div class="task-desc">左栏：粘贴 JD + 选简历版本；右栏：分数圆环 + 关键词分析 + AI 建议</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">分数圆环动画 <span class="tag tag-fe">前端</span></div><div class="task-desc">SVG circle stroke-dashoffset 动画，0–100 颜色渐变（红→黄→绿），数字从0跳到最终分</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">关键词标签展示 <span class="tag tag-fe">前端</span></div><div class="task-desc">命中关键词：绿色 tag；缺失关键词：红色 tag + "建议添加到第X段"</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">AI 建议卡片列表 <span class="tag tag-fe">前端</span></div><div class="task-desc">每条建议：问题描述 + 具体改写示例，streaming 逐字显示</div></div></div>
+      </div>
+    </div>
+
+    <div class="day-block">
+      <div class="day-label">Day 5 · 格式检查</div>
+      <div class="task-list">
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">ATS 格式问题检测 <span class="tag tag-be">后端</span></div><div class="task-desc">规则检查：是否有表格/图片（ATS不友好）、文件是否有特殊字符、Section标题是否标准</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">Week 3 内测：10 个真实 JD 测试 <span class="tag tag-test">测试</span></div><div class="task-desc">找 10 个 SEEK 上的 Data Analyst JD，跑 ATS 检查，验证分数合理性和建议质量</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 4 -->
+  <div class="panel" id="panel-w4">
+    <div class="week-header">
+      <span class="week-num">Week 4</span>
+      <span class="week-title">打磨 + 付费墙 + 上线</span>
+    </div>
+    <div class="week-goal">
+      <strong>本周交付目标：</strong>修完 Week 1–3 的所有 bug，接入 Stripe，设定 Free/Pro 限制，发布到 Product Hunt + 求职社区，拿到第一批真实用户。<br>
+      <strong>验收标准：</strong>有人主动注册（不是朋友），有人问"怎么付钱"。
+    </div>
+
+    <div class="day-block">
+      <div class="day-label">Day 1–2 · Bug 修复 + 体验优化</div>
+      <div class="task-list">
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">统一 Loading / Error 状态 <span class="tag tag-fe">前端</span></div><div class="task-desc">所有 API 请求加 toast 通知，错误有友好提示，加 skeleton loading</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">移动端适配检查 <span class="tag tag-fe">前端</span></div><div class="task-desc">Resume 编辑器移动端降级为单栏，ATS Check 页面确保手机可用</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">API 限速 + 错误处理 <span class="tag tag-be">后端</span></div><div class="task-desc">Claude API 加 try/catch + 重试，ATS 接口加 rate limit（每用户每分钟5次）</div></div></div>
+      </div>
+    </div>
+
+    <div class="day-block">
+      <div class="day-label">Day 3 · Stripe 付费</div>
+      <div class="task-list">
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">Stripe 订阅接入 <span class="tag tag-be">后端</span></div><div class="task-desc">创建 Pro 产品（$15/mo），/api/stripe/checkout 生成 session，/api/stripe/webhook 更新用户状态</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">Free / Pro 权限区分 <span class="tag tag-be">后端</span></div><div class="task-desc">Free：1份简历，5次ATS/月；Pro：无限。middleware 检查 subscription_status</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">Upgrade 弹窗 UI <span class="tag tag-fe">前端</span></div><div class="task-desc">超出 Free 额度时弹出升级提示，清晰展示 Pro 功能对比，一键跳 Stripe Checkout</div></div></div>
+      </div>
+    </div>
+
+    <div class="day-block">
+      <div class="day-label">Day 4–5 · 上线推广</div>
+      <div class="task-list">
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">SEO 基础配置 <span class="tag tag-fe">前端</span></div><div class="task-desc">metadata, og:image, robots.txt, sitemap.xml，Landing Page 针对"ATS resume checker Australia"优化</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">发布 Product Hunt <span class="tag tag-ship">上线</span></div><div class="task-desc">准备 tagline/描述/截图/demo gif，选周二或周四发（流量最高）</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">发帖：Monash 求职群 + Reddit <span class="tag tag-ship">上线</span></div><div class="task-desc">r/cscareerquestions "I tracked 50 job applications with my own tool"，真实数据，不硬广</div></div></div>
+        <div class="task" onclick="toggleTask(this)"><div class="cb"><div class="cb-check"></div></div><div class="task-body"><div class="task-title">接入 Analytics <span class="tag tag-test">测试</span></div><div class="task-desc">Vercel Analytics（免费）+ Posthog 事件追踪（注册/ATS使用/付费点击）</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARCH -->
+  <div class="panel" id="panel-arch">
+    <div class="week-header">
+      <span class="week-num">DB + API</span>
+      <span class="week-title">数据库设计 + API 路由</span>
+    </div>
+
+    <div class="section-h">数据库表结构</div>
+
+    <div class="code-label">profiles 表（用户信息）</div>
+    <table class="schema-table">
+      <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>id <span class="pk">PK</span></td><td class="type">uuid</td><td>= auth.users.id</td></tr>
+        <tr><td>full_name</td><td class="type">text</td><td>显示名</td></tr>
+        <tr><td>subscription_status</td><td class="type">text</td><td>free / pro / cancelled</td></tr>
+        <tr><td>stripe_customer_id</td><td class="type">text</td><td>Stripe 客户 ID</td></tr>
+        <tr><td>ats_count_this_month</td><td class="type">int4</td><td>当月 ATS 使用次数</td></tr>
+        <tr><td>created_at</td><td class="type">timestamptz</td><td>注册时间</td></tr>
+      </tbody>
+    </table>
+
+    <div class="code-label">resumes 表</div>
+    <table class="schema-table">
+      <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>id <span class="pk">PK</span></td><td class="type">uuid</td><td>简历 ID</td></tr>
+        <tr><td>user_id <span class="fk">FK</span></td><td class="type">uuid</td><td>→ profiles.id</td></tr>
+        <tr><td>title</td><td class="type">text</td><td>"Data Analyst v2"</td></tr>
+        <tr><td>data</td><td class="type">jsonb</td><td>完整简历数据（见 TypeScript schema）</td></tr>
+        <tr><td>template</td><td class="type">text</td><td>模板名，默认 "classic"</td></tr>
+        <tr><td>updated_at</td><td class="type">timestamptz</td><td>最后保存时间</td></tr>
+      </tbody>
+    </table>
+
+    <div class="code-label">ats_results 表</div>
+    <table class="schema-table">
+      <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>id <span class="pk">PK</span></td><td class="type">uuid</td><td></td></tr>
+        <tr><td>user_id <span class="fk">FK</span></td><td class="type">uuid</td><td>→ profiles.id</td></tr>
+        <tr><td>resume_id <span class="fk">FK</span></td><td class="type">uuid</td><td>→ resumes.id</td></tr>
+        <tr><td>jd_text</td><td class="type">text</td><td>粘贴的 JD 原文</td></tr>
+        <tr><td>score</td><td class="type">int4</td><td>0–100</td></tr>
+        <tr><td>analysis</td><td class="type">jsonb</td><td>{matched[], missing[], suggestions[]}</td></tr>
+        <tr><td>created_at</td><td class="type">timestamptz</td><td></td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-h">API 路由设计</div>
+
+    <div class="api-row"><span class="method post">POST</span><div><div class="api-path">/api/resumes</div><div class="api-desc">新建简历，返回 resume id</div></div></div>
+    <div class="api-row"><span class="method get">GET</span><div><div class="api-path">/api/resumes</div><div class="api-desc">获取当前用户所有简历列表</div></div></div>
+    <div class="api-row"><span class="method get">GET</span><div><div class="api-path">/api/resumes/[id]</div><div class="api-desc">获取单份简历完整数据</div></div></div>
+    <div class="api-row"><span class="method post">PUT</span><div><div class="api-path">/api/resumes/[id]</div><div class="api-desc">更新简历内容（自动保存触发）</div></div></div>
+    <div class="api-row"><span class="method post">POST</span><div><div class="api-path">/api/resumes/[id]/export</div><div class="api-desc">生成并返回 PDF blob</div></div></div>
+    <div class="api-row"><span class="method post">POST</span><div><div class="api-path">/api/ats/analyze</div><div class="api-desc">接收 resume_id + jd_text，返回 streaming 分析结果</div></div></div>
+    <div class="api-row"><span class="method get">GET</span><div><div class="api-path">/api/ats/history</div><div class="api-desc">当前用户历史 ATS 记录</div></div></div>
+    <div class="api-row"><span class="method post">POST</span><div><div class="api-path">/api/stripe/checkout</div><div class="api-desc">创建 Stripe checkout session</div></div></div>
+    <div class="api-row"><span class="method post">POST</span><div><div class="api-path">/api/stripe/webhook</div><div class="api-desc">处理 Stripe 事件，更新 subscription_status</div></div></div>
+  </div>
+
+  <!-- PROMPTS -->
+  <div class="panel" id="panel-prompt">
+    <div class="week-header">
+      <span class="week-num">Claude Prompts</span>
+      <span class="week-title">ATS 分析核心提示词</span>
+    </div>
+
+    <div class="section-h">System Prompt（固定，每次请求带上）</div>
+    <div class="prompt-box">
+      <div class="prompt-label">System</div>
+      <p>You are an expert ATS (Applicant Tracking System) analyst and career coach specializing in the Australian job market.
+
+Your job is to analyze a resume against a job description and return a structured JSON response.
+
+ALWAYS respond with valid JSON only. No markdown, no explanation outside JSON.
+
+Response format:
+{
+  "score": number (0-100),
+  "summary": string (1 sentence overall assessment),
+  "matched_keywords": [{"word": string, "importance": "high"|"medium"|"low"}],
+  "missing_keywords": [{"word": string, "importance": "high"|"medium"|"low", "suggestion": string}],
+  "suggestions": [
+    {
+      "type": "keyword"|"format"|"content",
+      "issue": string,
+      "fix": string,
+      "example": string
+    }
+  ],
+  "format_issues": [string]
+}</p>
+    </div>
+
+    <div class="section-h">User Prompt 模板（每次调用动态填入）</div>
+    <div class="prompt-box">
+      <div class="prompt-label">User Message</div>
+      <p>Analyze this resume against the job description below.
+
+=== JOB DESCRIPTION ===
+{jd_text}
+
+=== RESUME CONTENT ===
+{resume_plain_text}
+
+Scoring criteria:
+- Keyword match (40%): exact and semantic matches of required skills/tools/qualifications
+- Quantified achievements (20%): numbers, percentages, impact metrics
+- Relevance of experience (25%): how well past roles match this JD
+- Format & ATS compatibility (15%): standard section headings, no tables/images, clean structure
+
+Be specific. For missing_keywords, always provide a concrete "suggestion" showing where/how to add it.
+For suggestions, provide a real "example" rewrite, not generic advice.</p>
+    </div>
+
+    <div class="section-h">关键词提取 Prompt（预处理 JD 用）</div>
+    <div class="prompt-box">
+      <div class="prompt-label">JD Keyword Extraction</div>
+      <p>Extract all important keywords from this job description.
+Categorize them and return JSON only:
+{
+  "required_skills": [string],
+  "preferred_skills": [string],
+  "tools_technologies": [string],
+  "soft_skills": [string],
+  "qualifications": [string],
+  "industry_terms": [string]
+}
+
+Job Description:
+{jd_text}</p>
+    </div>
+
+    <div class="section-h">可选：简历改写 Prompt（Pro 功能）</div>
+    <div class="prompt-box">
+      <div class="prompt-label">Bullet Point Rewriter</div>
+      <p>Rewrite the following resume bullet point to better match this job description.
+Keep it under 2 lines. Use strong action verbs. Add quantification if possible.
+Match the tone and keywords from the JD without being dishonest.
+
+Original bullet: {original_bullet}
+Job requires: {key_requirements}
+Target role: {job_title}
+
+Return JSON: {"rewritten": string, "keywords_added": [string]}</p>
+    </div>
+
+    <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md, 8px); padding: 12px 14px; margin-top: 1rem;">
+      <div style="font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px;">实现 Streaming 的代码骨架</div>
+      <div class="code-block">// app/api/ats/analyze/route.ts
+import Anthropic from '@anthropic-ai/sdk'
+
+export async function POST(req: Request) {
+  const { resumeText, jdText } = await req.json()
+  const client = new Anthropic()
+
+  const stream = await client.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 2000,
+    stream: true,
+    system: SYSTEM_PROMPT,
+    messages: [{ role: 'user', content: buildUserPrompt(resumeText, jdText) }]
+  })
+
+  return new Response(
+    new ReadableStream({
+      async start(controller) {
+        for await (const chunk of stream) {
+          if (chunk.type === 'content_block_delta') {
+            controller.enqueue(new TextEncoder().encode(chunk.delta.text))
+          }
+        }
+        controller.close()
+      }
+    }),
+    { headers: { 'Content-Type': 'text/plain; charset=utf-8' } }
+  )
+}</div>
+    </div>
+
+    <div style="margin-top: 1.2rem; display: flex; gap: 8px; flex-wrap: wrap;">
+      <button onclick="sendPrompt('帮我写 JobUFO Resume Builder 的完整 React 组件代码，包含 react-hook-form + 实时预览 + 自动保存 ↗')">生成 Resume Builder 代码 ↗</button>
+      <button onclick="sendPrompt('帮我设计 JobUFO ATS Check 结果页的 UI 组件，包含分数圆环动画和关键词标签 ↗')">生成 ATS UI 代码 ↗</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var state = {
+  w1: {label:'Week 1 进度', tasks: []},
+  w2: {label:'Week 2 进度', tasks: []},
+  w3: {label:'Week 3 进度', tasks: []},
+  w4: {label:'Week 4 进度', tasks: []},
+  arch: {label:'', tasks: []},
+  prompt: {label:'', tasks: []}
+};
+var cur = 'w1';
+
+function switchTab(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  document.querySelectorAll('.tab')[['w1','w2','w3','w4','arch','prompt'].indexOf(id)].classList.add('active');
+  cur = id;
+  updateProgress();
+}
+
+function toggleTask(el) {
+  el.classList.toggle('done');
+  updateProgress();
+}
+
+function updateProgress() {
+  var panel = document.getElementById('panel-' + cur);
+  if (!panel) return;
+  var tasks = panel.querySelectorAll('.task');
+  var done = panel.querySelectorAll('.task.done');
+  var pct = tasks.length ? Math.round(done.length / tasks.length * 100) : 0;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = done.length + ' / ' + tasks.length;
+  var s = state[cur];
+  document.getElementById('prog-label').textContent = s && s.label ? s.label : '';
+}
+
+updateProgress();
+</script>
