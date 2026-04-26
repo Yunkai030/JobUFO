@@ -42,6 +42,13 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   const { data, error } = await supabase.auth.signUp(parsed.data)
   if (error) return { error: error.message }
 
+  // Supabase returns success with empty identities[] when the email is already
+  // registered (avoids leaking which emails exist). Translate that into a clear
+  // message pointing the user to login.
+  if (data.user && data.user.identities && data.user.identities.length === 0) {
+    return { error: 'This email is already registered. Please log in instead.' }
+  }
+
   // If email confirmation is enabled, session will be null until user confirms.
   if (!data.session) {
     return { error: 'Check your email to confirm your account, then log in.' }
