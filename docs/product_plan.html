@@ -1,0 +1,231 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ac: #534AB7; --ac-l: #EEEDFE; --ac-m: #7F77DD; --ac-d: #3C3489;
+  --tl: #1D9E75; --tl-l: #E1F5EE; --tl-d: #085041;
+  --am: #BA7517; --am-l: #FAEEDA;
+  --rd: #A32D2D; --rd-l: #FCEBEB;
+  --gn: #3B6D11; --gn-l: #EAF3DE;
+}
+.page { padding: 2rem 1.5rem; font-family: var(--font-sans, sans-serif); }
+.hero { text-align: center; padding: 2.5rem 1rem 2rem; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 2rem; }
+.badge { display: inline-block; background: var(--ac-l); color: var(--ac-d); font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; letter-spacing: .04em; margin-bottom: 1rem; }
+.hero h1 { font-size: 26px; font-weight: 500; color: var(--color-text-primary); margin-bottom: .5rem; }
+.hero-sub { font-size: 14px; color: var(--color-text-secondary); max-width: 540px; margin: 0 auto; line-height: 1.6; }
+.sec { margin-bottom: 2.5rem; }
+.sec-lbl { font-size: 11px; font-weight: 500; letter-spacing: .08em; color: var(--ac-m); text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+.sec-lbl::after { content: ''; flex: 1; height: 0.5px; background: var(--color-border-tertiary); }
+.sec-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin-bottom: .4rem; }
+.sec-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.65; margin-bottom: 1.25rem; }
+.pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.pain { background: var(--color-background-secondary); border-radius: var(--border-radius-md, 8px); padding: .85rem 1rem; border-left: 3px solid; border-radius: 0; }
+.pain.r { border-color: #E24B4A; }
+.pain.a { border-color: #EF9F27; }
+.pain.t { border-color: #1D9E75; }
+.pain strong { font-size: 13px; color: var(--color-text-primary); display: block; margin-bottom: 3px; }
+.pain span { font-size: 12px; color: var(--color-text-secondary); display: block; line-height: 1.5; }
+.comp-wrap { overflow-x: auto; }
+.comp-table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 480px; table-layout: fixed; }
+.comp-table th { background: var(--color-background-secondary); padding: 8px 10px; text-align: left; color: var(--color-text-secondary); font-weight: 500; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.comp-table td { padding: 8px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); vertical-align: middle; }
+.comp-table tr:last-child td { border-bottom: none; }
+.comp-table tr.you { background: var(--color-background-secondary); }
+.chip { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.cy { background: var(--gn-l); color: var(--gn); }
+.cn { background: var(--rd-l); color: var(--rd); }
+.cp { background: var(--am-l); color: var(--am); }
+.cd { background: #AFA9EC; color: #26215C; }
+.metrics { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1.25rem; }
+.metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md, 8px); padding: .8rem 1rem; flex: 1; min-width: 110px; }
+.metric .lbl { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.metric .val { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
+.metric .sub { font-size: 11px; color: var(--color-text-secondary); }
+.feat-row { display: flex; gap: 10px; align-items: flex-start; padding: .65rem 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.feat-row:last-child { border-bottom: none; }
+.feat-num { background: var(--ac-l); color: var(--ac); width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; margin-top: 1px; }
+.feat-body h4 { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+.feat-body p { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+.tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+.tech { background: var(--color-background-secondary); border-radius: var(--border-radius-md, 8px); padding: .7rem .9rem; }
+.tech .layer { font-size: 10px; color: var(--color-text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+.tech .name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+.tech .why { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+.price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.plan { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg, 12px); padding: 1rem; background: var(--color-background-primary); }
+.plan.feat { border: 2px solid var(--ac-m); }
+.plan-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+.plan-price { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.plan-price span { font-size: 12px; color: var(--color-text-secondary); font-weight: 400; }
+.plan-desc { font-size: 11px; color: var(--color-text-secondary); margin-top: 6px; line-height: 1.5; }
+.plan-badge { font-size: 10px; background: var(--ac-l); color: var(--ac); padding: 2px 8px; border-radius: 20px; display: inline-block; margin-bottom: 6px; font-weight: 500; }
+.tl { position: relative; padding-left: 24px; }
+.tl::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 1px; background: var(--color-border-tertiary); }
+.tl-item { position: relative; margin-bottom: 1rem; }
+.tl-dot { position: absolute; left: -20px; top: 4px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ac-m); background: var(--color-background-primary); }
+.tl-dot.f { background: var(--ac-m); }
+.tl-wk { font-size: 11px; color: var(--ac-m); font-weight: 500; margin-bottom: 2px; }
+.tl-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 3px; }
+.tl-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+.moat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.moat { background: var(--color-background-secondary); border-radius: var(--border-radius-md, 8px); padding: .9rem 1rem; }
+.moat h4 { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 3px; }
+.moat p { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+.risk-row { display: flex; align-items: flex-start; gap: 10px; padding: .65rem 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.risk-row:last-child { border-bottom: none; }
+.rtag { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; flex-shrink: 0; margin-top: 2px; }
+.rh { background: var(--rd-l); color: var(--rd); }
+.rm { background: var(--am-l); color: var(--am); }
+.rl { background: var(--gn-l); color: var(--gn); }
+.risk-text h4 { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+.risk-text p { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+.cta { text-align: center; padding: 2rem 1rem; background: var(--ac-l); border-radius: var(--border-radius-lg, 12px); margin-top: 2rem; }
+.cta h2 { font-size: 18px; font-weight: 500; color: var(--ac-d); margin-bottom: .5rem; }
+.cta p { font-size: 13px; color: var(--ac); margin-bottom: 1.2rem; }
+.cta button { background: var(--ac); color: #EEEDFE; border: none; border-radius: var(--border-radius-md, 8px); padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; }
+</style>
+
+<div class="page">
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">JobUFO full product strategy plan in English — brainstorm, market research, tech stack, monetisation, and roadmap</h2>
+
+<div class="hero">
+  <div class="badge">Product Strategy · Full Plan · English</div>
+  <h1>JobUFO — All-in-One Job Application OS</h1>
+  <div class="hero-sub">Resume builder + ATS checker + auto-fill + application tracker + Sankey analytics. One platform. The entire job-hunting workflow, covered.</div>
+</div>
+
+<div class="sec">
+  <div class="sec-lbl">01 · Brainstorm</div>
+  <div class="sec-title">The core insight: job seekers use 5 tools to do 1 thing</div>
+  <div class="sec-desc">Right now a job seeker has to juggle LinkedIn (find jobs), Resume.io (write resume), Huntr/Trello (track applications), ChatGPT (polish copy), and Excel (log data). Information is scattered, workflow is broken. JobUFO's value is stitching the whole chain together in one place.</div>
+  <div class="pain-grid">
+    <div class="pain r"><strong>Pain 1 — no feedback on resume quality</strong><span>ATS filters out 85% of resumes. Candidates have no idea why they're being screened out.</span></div>
+    <div class="pain r"><strong>Pain 2 — re-typing the same info constantly</strong><span>Every new application means filling in name, education, and work history from scratch. Tedious and error-prone.</span></div>
+    <div class="pain a"><strong>Pain 3 — no visibility on application outcomes</strong><span>How many sent? Who replied? What's the conversion rate? Zero data available.</span></div>
+    <div class="pain a"><strong>Pain 4 — can't tell which channel is working</strong><span>SEEK vs LinkedIn vs direct — job seekers have no way to compare performance across channels.</span></div>
+    <div class="pain t"><strong>Opportunity — AI is barely used in job tools</strong><span>Existing products have shallow AI integration. JD matching and keyword optimisation are wide open.</span></div>
+    <div class="pain t"><strong>Opportunity — Australian market gap</strong><span>Deep SEEK/GradConnection integration, local visa context. Global products don't bother.</span></div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-lbl">02 · Market research</div>
+  <div class="sec-title">Competitor landscape</div>
+  <div class="sec-desc">JobUFO's differentiation is the depth of integration across all three core modules — not any single feature in isolation.</div>
+  <div class="comp-wrap">
+  <table class="comp-table">
+    <thead><tr><th style="width:18%">Product</th><th style="width:14%">Resume builder</th><th style="width:13%">ATS check</th><th style="width:12%">Auto-fill</th><th style="width:12%">Tracker</th><th style="width:13%">Analytics</th><th style="width:18%">Pricing</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Teal HQ</strong></td><td><span class="chip cy">Yes</span></td><td><span class="chip cp">Basic</span></td><td><span class="chip cp">Partial</span></td><td><span class="chip cy">Yes</span></td><td><span class="chip cn">No</span></td><td>Free + $29/mo</td></tr>
+      <tr><td><strong>Jobscan</strong></td><td><span class="chip cn">No</span></td><td><span class="chip cy">Strong</span></td><td><span class="chip cn">No</span></td><td><span class="chip cn">No</span></td><td><span class="chip cn">No</span></td><td>$49/mo</td></tr>
+      <tr><td><strong>Huntr</strong></td><td><span class="chip cn">No</span></td><td><span class="chip cn">No</span></td><td><span class="chip cn">No</span></td><td><span class="chip cy">Strong</span></td><td><span class="chip cp">Basic</span></td><td>Free + $5/mo</td></tr>
+      <tr><td><strong>Resume.io</strong></td><td><span class="chip cy">Strong</span></td><td><span class="chip cn">No</span></td><td><span class="chip cn">No</span></td><td><span class="chip cn">No</span></td><td><span class="chip cn">No</span></td><td>$24/mo</td></tr>
+      <tr class="you"><td><strong>JobUFO</strong></td><td><span class="chip cd">AI-powered</span></td><td><span class="chip cd">Deep</span></td><td><span class="chip cd">One-click</span></td><td><span class="chip cd">Yes</span></td><td><span class="chip cd">Sankey</span></td><td>Free + $15/mo</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="lbl">Global job-search software market</div><div class="val">$3.2B</div><div class="sub">Projected $5.8B by 2027</div></div>
+    <div class="metric"><div class="lbl">Annual job seekers in Australia</div><div class="val">2.4M+</div><div class="sub">Grads + career changers</div></div>
+    <div class="metric"><div class="lbl">Early target user</div><div class="val">Grads</div><div class="sub">Monash, Melbourne, UNSW etc.</div></div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-lbl">03 · Product features</div>
+  <div class="sec-title">Three core modules</div>
+  <div class="feat-row"><div class="feat-num">1</div><div class="feat-body"><h4>Resume builder + ATS score</h4><p>Drag-and-drop resume editor with clean templates. AI analyses keyword density, formatting compliance, and ATS friendliness in real time — giving a 0–100 score plus specific, actionable feedback (e.g. "Missing 'data analysis' — suggest adding to paragraph 2"). Generate a tailored version for each JD.</p></div></div>
+  <div class="feat-row"><div class="feat-num">2</div><div class="feat-body"><h4>Smart auto-fill profile</h4><p>User fills in a complete "job profile" once (education, experience, skills, visa status). Install the browser extension, then apply on SEEK/LinkedIn/company sites and one click auto-populates every field. Supports multiple resume versions and remembers field mappings per platform.</p></div></div>
+  <div class="feat-row"><div class="feat-num">3</div><div class="feat-body"><h4>Application tracker + Sankey analytics</h4><p>Every application is logged automatically (or added manually): company, role, channel, date, status. Track the full funnel: Applied → Test → Phone screen → Interview → Final → Offer/Rejected. A Sankey diagram shows conversion rates at a glance, helping users double down on what's working.</p></div></div>
+</div>
+
+<div class="sec">
+  <div class="sec-lbl">04 · Tech stack</div>
+  <div class="sec-title">Stack choices (speed to launch is the priority)</div>
+  <div class="tech-grid">
+    <div class="tech"><div class="layer">Frontend</div><div class="name">Next.js 14</div><div class="why">SSR + App Router, SEO-ready</div></div>
+    <div class="tech"><div class="layer">UI</div><div class="name">Tailwind + shadcn</div><div class="why">Fast to build, polished output</div></div>
+    <div class="tech"><div class="layer">Backend / API</div><div class="name">Next.js API Routes</div><div class="why">Full-stack in one repo</div></div>
+    <div class="tech"><div class="layer">Database</div><div class="name">Supabase</div><div class="why">Realtime + Auth + generous free tier</div></div>
+    <div class="tech"><div class="layer">AI / ATS</div><div class="name">Claude API</div><div class="why">Keyword analysis + rewrite suggestions</div></div>
+    <div class="tech"><div class="layer">Sankey chart</div><div class="name">D3.js / Nivo</div><div class="why">Flexible funnel visualisation</div></div>
+    <div class="tech"><div class="layer">Browser extension</div><div class="name">Chrome MV3</div><div class="why">Core vehicle for auto-fill</div></div>
+    <div class="tech"><div class="layer">Deployment</div><div class="name">Vercel</div><div class="why">Zero config, auto CI/CD</div></div>
+    <div class="tech"><div class="layer">PDF export</div><div class="name">React-PDF</div><div class="why">High-fidelity resume generation</div></div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-lbl">05 · Monetisation</div>
+  <div class="sec-title">Freemium + subscription + B2B — three layers</div>
+  <div class="price-grid">
+    <div class="plan">
+      <div class="plan-name">Free</div>
+      <div class="plan-price">$0</div>
+      <div class="plan-desc">1 resume, 5 ATS checks per month, basic tracker (10 applications), no analytics. Used for acquisition and word-of-mouth.</div>
+    </div>
+    <div class="plan feat">
+      <div class="plan-badge">Primary revenue</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price">$15 <span>/mo</span></div>
+      <div class="plan-desc">Unlimited resumes and ATS checks, auto-fill extension, full Sankey analytics, AI rewrite suggestions, high-res PDF export.</div>
+    </div>
+    <div class="plan">
+      <div class="plan-name">Pro annual</div>
+      <div class="plan-price">$99 <span>/yr</span></div>
+      <div class="plan-desc">Equivalent to $8.25/mo — 45% saving. Suits candidates with longer job-search timelines. Improves LTV.</div>
+    </div>
+    <div class="plan">
+      <div class="plan-name">B2B / career centre</div>
+      <div class="plan-price">$299 <span>/mo</span></div>
+      <div class="plan-desc">University career centres and training providers. Bulk seats, white-label option, student management dashboard.</div>
+    </div>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="lbl">Target MRR at month 12</div><div class="val">$5K</div><div class="sub">~350 Pro users</div></div>
+    <div class="metric"><div class="lbl">Target conversion rate</div><div class="val">5–8%</div><div class="sub">Free → Pro (industry avg 4–6%)</div></div>
+    <div class="metric"><div class="lbl">Target CAC</div><div class="val">&lt;$20</div><div class="sub">Community + content-driven</div></div>
+    <div class="metric"><div class="lbl">Estimated LTV</div><div class="val">$90</div><div class="sub">Avg job-search ~6 months</div></div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-lbl">06 · Launch roadmap</div>
+  <div class="sec-title">12 weeks: MVP → first paying users</div>
+  <div class="tl">
+    <div class="tl-item"><div class="tl-dot f"></div><div class="tl-wk">Week 1–2</div><div class="tl-title">Core skeleton</div><div class="tl-desc">Auth (Supabase), basic resume editor, database schema. Landing page live to collect emails.</div></div>
+    <div class="tl-item"><div class="tl-dot f"></div><div class="tl-wk">Week 3–4</div><div class="tl-title">ATS check + resume PDF export</div><div class="tl-desc">Claude API integration — keyword matching and scoring. React-PDF resume export. Alpha test with 5 friends.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-wk">Week 5–6</div><div class="tl-title">Application tracker + Sankey</div><div class="tl-desc">Status tracking functionality, D3.js Sankey visualisation. This is the key differentiator — make it genuinely impressive.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-wk">Week 7–8</div><div class="tl-title">Chrome extension auto-fill</div><div class="tl-desc">MV3 extension supporting SEEK and LinkedIn. Highest technical difficulty — tackle this after the first three modules are solid.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-wk">Week 9–10</div><div class="tl-title">Stripe + paywall</div><div class="tl-desc">Stripe subscription, Free/Pro permission gates. Launch on Product Hunt. Reach out to Monash Career Centre.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-wk">Week 11–12</div><div class="tl-title">Growth experiments</div><div class="tl-desc">Post on r/cscareerquestions and r/AusFinance. LinkedIn content ("I tracked 100 applications — here's the Sankey diagram"). Referral programme.</div></div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-lbl">07 · Competitive moat</div>
+  <div class="sec-title">Why users will stick around</div>
+  <div class="moat-grid">
+    <div class="moat"><h4>Data flywheel</h4><p>The more applications a user logs, the more personalised and valuable the analytics become. Historical data is hard to migrate away from.</p></div>
+    <div class="moat"><h4>Auto-fill habit lock-in</h4><p>Once the Chrome extension is installed and muscle memory kicks in, switching cost is high. Uninstalling feels like a step backwards.</p></div>
+    <div class="moat"><h4>Australian localisation depth</h4><p>Deep SEEK and GradConnection integration, Australian visa status fields, local salary benchmarks. Global competitors simply don't invest here.</p></div>
+    <div class="moat"><h4>Community + UGC</h4><p>Users can anonymously share their Sankey diagrams ("I sent 200 applications — here's my funnel"). Social sharing drives organic growth.</p></div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-lbl">08 · Risks and mitigations</div>
+  <div class="risk-row"><span class="rtag rh">High</span><div class="risk-text"><h4>Teal or LinkedIn copies the feature set</h4><p>Mitigation: stay ahead with Australian localisation and fast iteration. Large companies move slowly. Build community moat early.</p></div></div>
+  <div class="risk-row"><span class="rtag rh">High</span><div class="risk-text"><h4>SEEK / LinkedIn anti-bot measures block the extension</h4><p>Mitigation: use DOM manipulation (not scraping), stay within ToS. Research platform policies early. Build a manual-import fallback.</p></div></div>
+  <div class="risk-row"><span class="rtag rm">Medium</span><div class="risk-text"><h4>High churn — users cancel once they land a job</h4><p>Mitigation: also target career-changers, not just fresh grads. B2B revenue offsets C2C seasonal dips.</p></div></div>
+  <div class="risk-row"><span class="rtag rm">Medium</span><div class="risk-text"><h4>Claude API costs rise as scale grows</h4><p>Mitigation: cap ATS checks on the free tier, cache common JD analyses, unlimited usage only for Pro subscribers.</p></div></div>
+  <div class="risk-row"><span class="rtag rl">Low</span><div class="risk-text"><h4>Building solo is slow</h4><p>Mitigation: validate demand with a no-code prototype first (Webflow + Notion). Only go heads-down on full dev once someone tries to pay you.</p></div></div>
+</div>
+
+<div class="cta">
+  <h2>Your next move</h2>
+  <p>Solo build — first validate the core assumption: will people actually pay for an ATS check?</p>
+  <button onclick="sendPrompt('Give me the JobUFO MVP dev plan in English, week by week, using Next.js + Supabase + Claude API, focused on Resume Builder and ATS Check ↗')">Generate MVP dev plan in English ↗</button>
+</div>
+
+</div>
