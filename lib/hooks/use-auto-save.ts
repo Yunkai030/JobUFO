@@ -6,7 +6,7 @@ export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error'
 
 export function useAutoSave(delay = 2000) {
   const [status, setStatus] = useState<SaveStatus>('idle')
-  const timerRef = useRef<ReturnType<typeof setTimeout>>()
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   const trigger = useCallback(
     (saveFn: () => Promise<void>) => {

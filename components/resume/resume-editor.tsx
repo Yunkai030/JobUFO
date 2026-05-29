@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useTransition } from 'react'
 import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 import type {
   ResumeWithSections,
   PersonalInfo,
@@ -78,11 +79,11 @@ export function ResumeEditor({ initial }: { initial: ResumeWithSections }) {
   ) {
     const onChange = (index: number, fields: Partial<T>) => {
       setResume((r) => {
-        const list = [...(r[key] as T[])]
+        const list = [...(r[key] as unknown as T[])]
         list[index] = { ...list[index], ...fields }
         return { ...r, [key]: list }
       })
-      const itemId = (resume[key] as T[])[index]?.id
+      const itemId = (resume[key] as unknown as T[])[index]?.id
       if (itemId) {
         trigger(() => updateSectionItem(table, itemId, fields as Record<string, unknown>))
       }
@@ -91,23 +92,23 @@ export function ResumeEditor({ initial }: { initial: ResumeWithSections }) {
     const onAdd = async () => {
       const newId = await addSectionItem(table, resume.id)
       setResume((r) => {
-        const list = r[key] as T[]
+        const list = r[key] as unknown as T[]
         const newItem = {
           id: newId,
           resume_id: resume.id,
           sort_order: list.length,
-        } as T
+        } as unknown as T
         return { ...r, [key]: [...list, newItem] }
       })
     }
 
     const onDelete = async (index: number) => {
-      const list = resume[key] as T[]
+      const list = resume[key] as unknown as T[]
       const itemId = list[index]?.id
       if (!itemId) return
       setResume((r) => ({
         ...r,
-        [key]: (r[key] as T[]).filter((_, i) => i !== index),
+        [key]: (r[key] as unknown as T[]).filter((_, i) => i !== index),
       }))
       await deleteSectionItem(table, itemId)
     }
@@ -125,8 +126,9 @@ export function ResumeEditor({ initial }: { initial: ResumeWithSections }) {
       {/* Header */}
       <div className="flex items-center gap-3 border-b bg-background px-4 py-2">
         <Link href="/dashboard/resumes">
-          <Button variant="ghost" size="sm">
-            &larr; Back
+          <Button variant="ghost" size="sm" className="gap-1">
+            <ArrowLeft className="size-3.5" />
+            Back
           </Button>
         </Link>
         <Input
@@ -148,7 +150,7 @@ export function ResumeEditor({ initial }: { initial: ResumeWithSections }) {
       <div className="flex flex-1 overflow-hidden">
         {/* Left — Form */}
         <div className="flex-1 overflow-y-auto p-6">
-          <div className="mx-auto max-w-2xl space-y-8">
+          <div className="stagger mx-auto max-w-2xl space-y-8">
             <FormSection title="Personal Information">
               {resume.personal_info && (
                 <PersonalInfoForm

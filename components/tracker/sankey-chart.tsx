@@ -99,10 +99,13 @@ export function SankeyChart({ applications }: Props) {
           [width, h - 10],
         ])
 
-      const { nodes: sNodes, links: sLinks } = generator({
+      const graphInput = {
         nodes: nodeList.map((d) => ({ ...d })),
         links: linkDefs.map((d) => ({ ...d })),
-      })
+      }
+      const { nodes: sNodes, links: sLinks } = generator(
+        graphInput as unknown as Parameters<typeof generator>[0]
+      )
 
       return {
         nodes: sNodes as SNode[],
@@ -132,19 +135,20 @@ export function SankeyChart({ applications }: Props) {
 
     return (
       <div className="space-y-2">
-        {STAGE_ORDER.filter((s) => (counts[s] ?? 0) > 0).map((s) => (
-          <div key={s} className="flex items-center gap-3">
+        {STAGE_ORDER.filter((s) => (counts[s] ?? 0) > 0).map((s, i) => (
+          <div key={s} className="flex items-center gap-3 animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
             <span className="w-28 text-sm">{STAGE_LABELS[s]}</span>
             <div className="flex-1 h-6 rounded bg-muted overflow-hidden">
               <div
-                className="h-full rounded transition-all"
+                className="h-full rounded animate-bar-grow"
                 style={{
                   width: `${((counts[s] ?? 0) / total) * 100}%`,
                   backgroundColor: NODE_COLORS[s],
+                  animationDelay: `${i * 60 + 200}ms`,
                 }}
               />
             </div>
-            <span className="text-sm font-medium w-8">{counts[s]}</span>
+            <span className="text-sm font-medium tabular-nums w-8">{counts[s]}</span>
           </div>
         ))}
       </div>
@@ -152,7 +156,7 @@ export function SankeyChart({ applications }: Props) {
   }
 
   return (
-    <svg viewBox={`0 0 700 ${height}`} className="w-full">
+    <svg viewBox={`0 0 700 ${height}`} className="w-full animate-fade-in">
       {links.map((link, i) => {
         const targetNode = link.target as SNode
         return (

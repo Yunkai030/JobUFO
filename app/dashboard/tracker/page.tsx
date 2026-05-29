@@ -6,62 +6,57 @@ import { SankeyChart } from '@/components/tracker/sankey-chart'
 export default async function TrackerPage() {
   const applications = await getApplications()
 
-  const stats = {
-    total: applications.length,
-    active: applications.filter(
-      (a) => !['rejected', 'withdrawn', 'offer'].includes(a.status)
-    ).length,
-    offers: applications.filter((a) => a.status === 'offer').length,
-    rejected: applications.filter((a) => a.status === 'rejected').length,
-  }
+  const stats = [
+    { label: 'Total', value: applications.length },
+    {
+      label: 'Active',
+      value: applications.filter(
+        (a) => !['rejected', 'withdrawn', 'offer'].includes(a.status)
+      ).length,
+    },
+    { label: 'Offers', value: applications.filter((a) => a.status === 'offer').length },
+    { label: 'Rejected', value: applications.filter((a) => a.status === 'rejected').length },
+  ]
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Application Tracker</h1>
+    <div className="max-w-5xl space-y-6">
+      <div className="flex items-center justify-between animate-fade-up">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Application Tracker</h1>
+          <p className="text-sm text-muted-foreground">
+            Track your job applications
+          </p>
+        </div>
         <AddApplicationForm />
       </div>
 
-      {/* Stats row */}
       {applications.length > 0 && (
-        <div className="grid grid-cols-4 gap-3">
-          <StatCard label="Total" value={stats.total} />
-          <StatCard label="Active" value={stats.active} color="text-blue-600" />
-          <StatCard label="Offers" value={stats.offers} color="text-green-600" />
-          <StatCard label="Rejected" value={stats.rejected} color="text-red-600" />
+        <div className="animate-fade-up grid grid-cols-2 gap-px rounded-2xl bg-border overflow-hidden sm:grid-cols-4" style={{ animationDelay: '60ms' }}>
+          {stats.map((s, i) => (
+            <div key={s.label} className="bg-card p-5">
+              <p
+                className="animate-count-pop text-3xl font-bold tracking-tight"
+                style={{ animationDelay: `${i * 80 + 150}ms` }}
+              >
+                {s.value}
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
+            </div>
+          ))}
         </div>
       )}
 
-      {/* Sankey chart */}
       {applications.length > 0 && (
-        <div>
-          <h2 className="mb-2 text-lg font-semibold">Application Funnel</h2>
+        <div className="animate-fade-up" style={{ animationDelay: '120ms' }}>
+          <h2 className="mb-3 text-lg font-semibold">Funnel</h2>
           <SankeyChart applications={applications} />
         </div>
       )}
 
-      {/* Application list */}
-      <div>
-        <h2 className="mb-2 text-lg font-semibold">All Applications</h2>
+      <div className="animate-fade-up" style={{ animationDelay: '180ms' }}>
+        <h2 className="mb-3 text-lg font-semibold">All Applications</h2>
         <ApplicationList applications={applications} />
       </div>
-    </div>
-  )
-}
-
-function StatCard({
-  label,
-  value,
-  color,
-}: {
-  label: string
-  value: number
-  color?: string
-}) {
-  return (
-    <div className="rounded-lg border bg-card p-3 text-center">
-      <div className={`text-2xl font-bold ${color ?? ''}`}>{value}</div>
-      <div className="text-xs text-muted-foreground">{label}</div>
     </div>
   )
 }

@@ -2,39 +2,33 @@
 
 import { useState, useTransition } from 'react'
 import type { Resume } from '@/lib/types/resume'
-import type { ATSResult } from '@/lib/types/ats'
-import { runATSCheck } from '@/lib/ats/analyze'
+import type { InterviewPrep } from '@/lib/types/interview'
+import { generateInterviewPrep } from '@/lib/interview/actions'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { ATSResultCard } from './ats-result-card'
+import { InterviewPrepCard } from './interview-prep-card'
 
 interface Props {
   resumes: Resume[]
-  initialResults: ATSResult[]
+  initialPreps: InterviewPrep[]
 }
 
-export function ATSChecker({ resumes, initialResults }: Props) {
+export function InterviewPrepForm({ resumes, initialPreps }: Props) {
   const [selectedResumeId, setSelectedResumeId] = useState(resumes[0]?.id ?? '')
   const [jobDescription, setJobDescription] = useState('')
-  const [results, setResults] = useState<ATSResult[]>(initialResults)
+  const [preps, setPreps] = useState<InterviewPrep[]>(initialPreps)
   const [error, setError] = useState('')
   const [pending, startTransition] = useTransition()
 
-  const handleCheck = () => {
-    if (!selectedResumeId) {
-      setError('Please select a resume first')
-      return
-    }
-    if (!jobDescription.trim()) {
-      setError('Please paste a job description')
-      return
-    }
+  const handleGenerate = () => {
+    if (!selectedResumeId) return setError('Please select a resume')
+    if (!jobDescription.trim()) return setError('Please paste a job description')
     setError('')
 
     startTransition(async () => {
-      const result = await runATSCheck(selectedResumeId, jobDescription.trim())
+      const result = await generateInterviewPrep(selectedResumeId, jobDescription.trim())
       if ('error' in result) {
         setError(result.error)
         return
@@ -44,19 +38,12 @@ export function ATSChecker({ resumes, initialResults }: Props) {
   }
 
   return (
-    <div className="max-w-3xl space-y-6">
-      <div className="animate-fade-up">
-        <h1 className="text-2xl font-bold tracking-tight">ATS Check</h1>
-        <p className="text-sm text-muted-foreground">
-          See how well your resume matches a job description
-        </p>
-      </div>
-
-      <Card className="animate-fade-up" style={{ animationDelay: '60ms' }}>
+    <>
+      <Card className="animate-fade-up" style={{ animationDelay: '100ms' }}>
         <CardHeader>
-          <CardTitle>Analyze Resume</CardTitle>
+          <CardTitle>Quick Question Generator</CardTitle>
           <CardDescription>
-            Select a resume and paste the target job description for an AI-powered compatibility analysis.
+            Generate 10 likely interview questions based on your resume and the job description.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
@@ -70,9 +57,7 @@ export function ATSChecker({ resumes, initialResults }: Props) {
             >
               {resumes.length === 0 && <option value="">No resumes found</option>}
               {resumes.map((r) => (
-                <option key={r.id} value={r.id}>
-                  {r.title}
-                </option>
+                <option key={r.id} value={r.id}>{r.title}</option>
               ))}
             </select>
           </div>
@@ -81,7 +66,7 @@ export function ATSChecker({ resumes, initialResults }: Props) {
             <Label htmlFor="jd">Job Description</Label>
             <Textarea
               id="jd"
-              rows={8}
+              rows={6}
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
               placeholder="Paste the full job description here..."
@@ -90,21 +75,20 @@ export function ATSChecker({ resumes, initialResults }: Props) {
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
-          <Button onClick={handleCheck} disabled={pending} className="w-full">
-            {pending ? 'Analyzing with AI...' : 'Run ATS Check'}
+          <Button onClick={handleGenerate} disabled={pending} className="w-full">
+            {pending ? 'Generating questions...' : 'Generate Questions'}
           </Button>
         </CardContent>
       </Card>
 
-      {/* Results history */}
-      {results.length > 0 && (
-        <div className="space-y-4 animate-fade-up" style={{ animationDelay: '120ms' }}>
-          <h2 className="text-lg font-semibold">Results</h2>
-          {results.map((r) => (
-            <ATSResultCard key={r.id} result={r} />
+      {preps.length > 0 && (
+        <div className="space-y-4 animate-fade-up" style={{ animationDelay: '200ms' }}>
+          <h2 className="text-lg font-semibold">Previous Preps</h2>
+          {preps.map((prep) => (
+            <InterviewPrepCard key={prep.id} prep={prep} />
           ))}
         </div>
       )}
-    </div>
+    </>
   )
 }
