@@ -3,6 +3,7 @@
 import Groq from 'groq-sdk'
 import { createClient } from '@/lib/supabase/server'
 import { getResumeById } from '@/lib/resume/queries'
+import { track } from '@/lib/analytics/track'
 import { ATS_SYSTEM_PROMPT, buildUserMessage } from './prompt'
 import type { ATSAnalysis } from '@/lib/types/ats'
 import type { ResumeWithSections } from '@/lib/types/resume'
@@ -120,6 +121,12 @@ export async function runATSCheck(
     .single()
 
   if (error) return { error: error.message }
+
+  await track('ats_check_run', {
+    resume_id: resumeId,
+    overall_score: Math.round(analysis.overall_score),
+  })
+
   return { id: data.id }
 }
 

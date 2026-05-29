@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { track } from '@/lib/analytics/track'
 import type { ApplicationStatus } from '@/lib/types/application'
 
 async function authedClient() {
@@ -37,6 +38,12 @@ export async function createApplication(formData: FormData) {
   })
 
   if (error) throw new Error(error.message)
+
+  await track('application_created', {
+    company: formData.get('company') as string,
+    channel: (formData.get('channel') as string) || null,
+  })
+
   revalidatePath('/dashboard/tracker')
 }
 
@@ -47,6 +54,9 @@ export async function updateApplicationStatus(id: string, status: ApplicationSta
     .update({ status })
     .eq('id', id)
   if (error) throw new Error(error.message)
+
+  await track('application_status_changed', { application_id: id, status })
+
   revalidatePath('/dashboard/tracker')
 }
 

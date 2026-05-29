@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { track } from '@/lib/analytics/track'
 import type {
   PersonalInfo,
   WorkExperience,
@@ -36,6 +37,8 @@ export async function createResume(_formData?: FormData) {
   await supabase
     .from('personal_info')
     .insert({ resume_id: data.id, full_name: '', email: user.email })
+
+  await track('resume_created', { resume_id: data.id })
 
   redirect(`/dashboard/resumes/${data.id}`)
 }

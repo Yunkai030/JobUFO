@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
 import { getBaseUrl } from '@/lib/utils/url'
+import { track } from '@/lib/analytics/track'
 import type { PlanInterval } from '@/lib/stripe/plans'
 
 type ActionResult = { url: string } | { error: string }
@@ -74,6 +75,9 @@ export async function createCheckoutSession(
     })
 
     if (!session.url) return { error: 'Could not start checkout. Please try again.' }
+
+    await track('checkout_started', { interval }, { userId: user.id })
+
     return { url: session.url }
   } catch (err) {
     console.error('[stripe] checkout error', err)

@@ -22,13 +22,12 @@ Your Supabase project needs all 7 migrations applied, including the new
 subscription one.
 
 1. Supabase dashboard → **SQL Editor**.
-2. Run `supabase/migrations/0007_subscription.sql` (paste its contents and
-   **Run**). Earlier migrations `0001`–`0006` should already be applied; if
-   you're setting up a fresh project, run them in order first.
-3. Confirm: **Table editor → profiles** should now show the columns
-   `subscription_status`, `stripe_customer_id`, `stripe_subscription_id`,
-   `subscription_plan`, `subscription_current_period_end`,
-   `subscription_cancel_at_period_end`.
+2. Run `supabase/migrations/0007_subscription.sql` then
+   `supabase/migrations/0008_events.sql` (paste each and **Run**). Earlier
+   migrations `0001`–`0006` should already be applied; if you're setting up a
+   fresh project, run them in order first.
+3. Confirm: **Table editor** shows the new `profiles` subscription columns
+   (`subscription_status`, `stripe_subscription_id`, …) and a new `events` table.
 
 ## 2. Push the code to GitHub **(you)**
 
@@ -66,6 +65,7 @@ Add each of these for the **Production** (and **Preview**) environments:
 | `STRIPE_PRICE_ID_YEARLY` | Stripe price ID (`price_...`) |
 | `STRIPE_WEBHOOK_SECRET` | set **after** step 6 (the prod `whsec_...`) |
 | `NEXT_PUBLIC_SITE_URL` | `https://yourdomain.com` (set after step 5) |
+| `ADMIN_EMAILS` | your email(s), comma-separated — who can see `/dashboard/analytics` |
 
 Then click **Deploy**. You'll get a `*.vercel.app` URL — verify the app loads.
 

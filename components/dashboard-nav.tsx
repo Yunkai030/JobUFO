@@ -11,6 +11,7 @@ import {
   Mic,
   Sparkles,
   CreditCard,
+  LineChart,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
@@ -22,8 +23,11 @@ const NAV_ITEMS = [
   { href: '/dashboard/billing', label: 'Billing', icon: CreditCard },
 ]
 
-export function Sidebar({ isVip = false }: { isVip?: boolean }) {
+const ADMIN_NAV_ITEM = { href: '/dashboard/analytics', label: 'Analytics', icon: LineChart, exact: false }
+
+export function Sidebar({ isVip = false, isAdmin = false }: { isVip?: boolean; isAdmin?: boolean }) {
   const pathname = usePathname()
+  const navItems = isAdmin ? [...NAV_ITEMS, ADMIN_NAV_ITEM] : NAV_ITEMS
 
   return (
     <aside className="fixed left-0 top-0 z-40 flex h-svh w-[220px] flex-col border-r bg-card">
@@ -38,7 +42,7 @@ export function Sidebar({ isVip = false }: { isVip?: boolean }) {
       {/* Nav */}
       <nav className="flex-1 px-3 pt-2">
         <div className="space-y-0.5">
-          {NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             const isActive = item.exact
               ? pathname === item.href
               : pathname.startsWith(item.href)

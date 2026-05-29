@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
+import { track } from '@/lib/analytics/track'
 
 const credentialsSchema = z.object({
   email: z.string().email('Enter a valid email'),
@@ -22,8 +23,10 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
   }
 
   const supabase = await createClient()
-  const { error } = await supabase.auth.signInWithPassword(parsed.data)
+  const { data, error } = await supabase.auth.signInWithPassword(parsed.data)
   if (error) return { error: error.message }
+
+  await track('user_logged_in', {}, { userId: data.user?.id })
 
   revalidatePath('/', 'layout')
   redirect('/dashboard')
@@ -48,6 +51,8 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   if (data.user && data.user.identities && data.user.identities.length === 0) {
     return { error: 'This email is already registered. Please log in instead.' }
   }
+
+  await track('user_signed_up', {}, { userId: data.user?.id })
 
   // If email confirmation is enabled, session will be null until user confirms.
   if (!data.session) {

@@ -3,6 +3,7 @@
 import Groq from 'groq-sdk'
 import { createClient } from '@/lib/supabase/server'
 import { getResumeById } from '@/lib/resume/queries'
+import { track } from '@/lib/analytics/track'
 import type { ResumeWithSections } from '@/lib/types/resume'
 
 function resumeToText(r: ResumeWithSections): string {
@@ -117,6 +118,12 @@ export async function generateInterviewPrep(
     .single()
 
   if (error) return { error: error.message }
+
+  await track('interview_prep_generated', {
+    resume_id: resumeId,
+    question_count: Array.isArray(parsed.questions) ? parsed.questions.length : 0,
+  })
+
   return { id: data.id }
 }
 

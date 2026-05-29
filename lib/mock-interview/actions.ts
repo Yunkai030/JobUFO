@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getResumeById } from '@/lib/resume/queries'
 import { getSubscription } from '@/lib/subscription/queries'
 import { FREE_LIMITS } from '@/lib/stripe/plans'
+import { track } from '@/lib/analytics/track'
 import type { ResumeWithSections } from '@/lib/types/resume'
 import type { MockRound, MockReport, MockInterview } from '@/lib/types/mock-interview'
 
@@ -139,6 +140,9 @@ Respond with JSON:
     .single()
 
   if (error) return { error: error.message }
+
+  await track('mock_interview_started', { company, role, resume_id: resumeId })
+
   return { id: data.id }
 }
 
@@ -308,6 +312,11 @@ Respond with JSON:
     .from('mock_interviews')
     .update({ status: 'completed', report })
     .eq('id', interviewId)
+
+  await track('mock_interview_completed', {
+    interview_id: interviewId,
+    overall_score: report.overall_score,
+  })
 }
 
 // ── Queries ─────────────────────────────────────────────────

@@ -3,7 +3,9 @@ import { signOut } from '@/app/(auth)/actions'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/server'
 import { getSubscription } from '@/lib/subscription/queries'
+import { isAdmin } from '@/lib/analytics/admin'
 import { Sidebar, MobileNav } from '@/components/dashboard-nav'
+import { AnalyticsBeacon } from '@/components/analytics-beacon'
 import { LogOut, Sparkles } from 'lucide-react'
 
 export default async function DashboardLayout({
@@ -18,13 +20,14 @@ export default async function DashboardLayout({
 
   if (!user) redirect('/login')
 
-  const subscription = await getSubscription()
+  const [subscription, admin] = await Promise.all([getSubscription(), isAdmin()])
 
   return (
     <div className="min-h-svh bg-background">
+      <AnalyticsBeacon />
       {/* Sidebar - desktop */}
       <div className="hidden md:block">
-        <Sidebar isVip={subscription.isVip} />
+        <Sidebar isVip={subscription.isVip} isAdmin={admin} />
       </div>
 
       {/* Mobile nav */}

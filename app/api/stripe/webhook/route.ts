@@ -3,6 +3,7 @@ import type Stripe from 'stripe'
 import { stripe } from '@/lib/stripe/client'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { planForPriceId } from '@/lib/stripe/plans'
+import { track } from '@/lib/analytics/track'
 
 // Stripe needs the raw, unparsed body to verify the signature. In the App
 // Router, `request.text()` returns exactly that — no special body config needed.
@@ -49,7 +50,17 @@ async function syncSubscription(sub: Stripe.Subscription) {
     ? await query.eq('id', userId)
     : await query.eq('stripe_customer_id', customerId)
 
-  if (error) console.error('[stripe webhook] failed to sync subscription', error)
+  if (error) {
+    console.error('[stripe webhook] failed to sync subscription', error)
+    return
+  }
+
+  // Analytics: record activation vs cancellation/revert.
+  if (ACTIVE.includes(status)) {
+    await track('subscription_activated', { plan: planForPriceId(priceId) }, { userId: userId ?? null })
+  } else if (status === 'free') {
+    await track('subscription_cancelled', {}, { userId: userId ?? null })
+  }
 }
 
 export async function POST(request: NextRequest) {

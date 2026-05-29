@@ -3,6 +3,7 @@
 import { useState, useCallback, useTransition } from 'react'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import { trackClient } from '@/lib/analytics/actions'
 import type {
   ResumeWithSections,
   PersonalInfo,
@@ -51,6 +52,7 @@ export function ResumeEditor({ initial }: { initial: ResumeWithSections }) {
       a.download = `${resume.title || 'resume'}.pdf`
       a.click()
       URL.revokeObjectURL(url)
+      trackClient('pdf_exported', { resume_id: resume.id }).catch(() => {})
     })
   }
 
