@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { track } from '@/lib/analytics/track'
+import { getBaseUrl } from '@/lib/utils/url'
 
 const credentialsSchema = z.object({
   email: z.string().email('Enter a valid email'),
@@ -42,7 +43,12 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   }
 
   const supabase = await createClient()
-  const { data, error } = await supabase.auth.signUp(parsed.data)
+  const baseUrl = await getBaseUrl()
+  const { data, error } = await supabase.auth.signUp({
+    email: parsed.data.email,
+    password: parsed.data.password,
+    options: { emailRedirectTo: `${baseUrl}/auth/callback` },
+  })
   if (error) return { error: error.message }
 
   // Supabase returns success with empty identities[] when the email is already
