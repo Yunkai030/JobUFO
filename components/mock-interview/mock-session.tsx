@@ -4,6 +4,7 @@ import { useState, useTransition, useRef, useEffect } from 'react'
 import type { MockInterview } from '@/lib/types/mock-interview'
 import { ROUND_LABELS } from '@/lib/types/mock-interview'
 import { submitAnswer, advanceRound } from '@/lib/mock-interview/actions'
+import { useSpeechRecognition, useSpeechSynthesis } from '@/lib/hooks/use-speech'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
@@ -18,6 +19,9 @@ import {
   Send,
   Loader2,
   CheckCircle2,
+  Mic,
+  MicOff,
+  Volume2,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -54,6 +58,12 @@ export function MockSession({ interview: initialInterview }: Props) {
   const [advancePending, startAdvanceTransition] = useTransition()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  // Voice: speak the question, dictate the answer.
+  const tts = useSpeechSynthesis()
+  const stt = useSpeechRecognition((finalText) => {
+    setCurrentAnswer((prev) => (prev ? prev.trimEnd() + ' ' : '') + finalText)
+  })
+
   const round = interview.rounds[interview.current_round]
   const question = round?.questions[currentQuestionIdx]
   const allQuestionsAnswered = round?.questions.every((q) => q.answer !== null) ?? false
@@ -69,6 +79,8 @@ export function MockSession({ interview: initialInterview }: Props) {
 
   const handleSubmitAnswer = () => {
     if (!currentAnswer.trim() || !question) return
+    stt.stop()
+    tts.stop()
     startTransition(async () => {
       const result = await submitAnswer(
         interview.id,
@@ -93,12 +105,16 @@ export function MockSession({ interview: initialInterview }: Props) {
   }
 
   const handleNextQuestion = () => {
+    tts.stop()
+    stt.stop()
     if (currentQuestionIdx < (round?.questions.length ?? 0) - 1) {
       setCurrentQuestionIdx((i) => i + 1)
     }
   }
 
   const handleAdvanceRound = () => {
+    tts.stop()
+    stt.stop()
     startAdvanceTransition(async () => {
       await advanceRound(interview.id)
       if (isLastRound) {
@@ -192,28 +208,69 @@ export function MockSession({ interview: initialInterview }: Props) {
       {question && (
         <Card className="animate-scale-in">
           <CardContent className="pt-6 space-y-4">
-            <p className="text-base font-medium leading-relaxed">
-              {question.question}
-            </p>
+            <div className="flex items-start justify-between gap-3">
+              <p className="text-base font-medium leading-relaxed">
+                {question.question}
+              </p>
+              {tts.supported && (
+                <button
+                  onClick={() => (tts.speaking ? tts.stop() : tts.speak(question.question))}
+                  title="Read question aloud"
+                  className={`flex size-8 shrink-0 items-center justify-center rounded-lg border transition-colors ${
+                    tts.speaking
+                      ? 'border-primary/30 bg-primary/10 text-primary'
+                      : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                  }`}
+                >
+                  <Volume2 className={`size-4 ${tts.speaking ? 'animate-pulse' : ''}`} />
+                </button>
+              )}
+            </div>
 
             {question.answer === null ? (
               <div className="space-y-3">
-                <Textarea
-                  ref={textareaRef}
-                  rows={6}
-                  value={currentAnswer}
-                  onChange={(e) => setCurrentAnswer(e.target.value)}
-                  placeholder="Type your answer... Be specific and detailed."
-                  className="resize-none"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                      handleSubmitAnswer()
-                    }
-                  }}
-                />
+                <div className="relative">
+                  <Textarea
+                    ref={textareaRef}
+                    rows={6}
+                    value={currentAnswer}
+                    onChange={(e) => setCurrentAnswer(e.target.value)}
+                    placeholder={stt.supported ? 'Type or tap the mic to speak your answer...' : 'Type your answer... Be specific and detailed.'}
+                    className="resize-none"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                        handleSubmitAnswer()
+                      }
+                    }}
+                  />
+                  {stt.supported && (
+                    <button
+                      onClick={() => (stt.listening ? stt.stop() : stt.start())}
+                      title={stt.listening ? 'Stop' : 'Speak your answer'}
+                      className={`absolute bottom-2.5 right-2.5 flex size-9 items-center justify-center rounded-full transition-all ${
+                        stt.listening
+                          ? 'bg-red-500 text-white shadow-lg shadow-red-500/30'
+                          : 'bg-foreground text-background hover:scale-105'
+                      }`}
+                    >
+                      {stt.listening ? <MicOff className="size-4" /> : <Mic className="size-4" />}
+                      {stt.listening && (
+                        <span className="absolute inset-0 animate-ping rounded-full bg-red-500 opacity-40" />
+                      )}
+                    </button>
+                  )}
+                </div>
+
+                {stt.listening && (
+                  <p className="flex items-center gap-2 text-xs text-red-500">
+                    <span className="size-1.5 animate-pulse rounded-full bg-red-500" />
+                    Listening…{stt.interim && <span className="italic text-muted-foreground">{stt.interim}</span>}
+                  </p>
+                )}
+
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-muted-foreground">
-                    Cmd + Enter to submit
+                    {stt.supported ? 'Type, speak, or Cmd + Enter to submit' : 'Cmd + Enter to submit'}
                   </span>
                   <Button
                     onClick={handleSubmitAnswer}
