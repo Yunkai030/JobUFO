@@ -7,6 +7,7 @@ import { getResumeById } from '@/lib/resume/queries'
 import { getSubscription } from '@/lib/subscription/queries'
 import { FREE_LIMITS } from '@/lib/stripe/plans'
 import { track } from '@/lib/analytics/track'
+import { getCompanyContextForMock } from '@/lib/interview-experience/actions'
 import type { ResumeWithSections } from '@/lib/types/resume'
 import type { MockRound, MockReport, MockInterview } from '@/lib/types/mock-interview'
 
@@ -88,8 +89,14 @@ export async function startMockInterview(
 
   const resumeText = resumeToText(resume)
 
+  // Company-flavored: pull real candidate experiences for this company.
+  const companyContext = await getCompanyContextForMock(company)
+  const companyBlock = companyContext
+    ? `\n\nREAL INTERVIEW INTELLIGENCE for ${company} (from candidates who actually interviewed there). Make your questions match this real reported style, format, and difficulty — reference the specific round types and question themes below:\n${companyContext}\n`
+    : ''
+
   const systemPrompt = `You are an interview question designer for ${company}, hiring for the role of ${role}.
-Based on the candidate's resume and job description, generate a structured 5-round mock interview.
+Based on the candidate's resume and job description, generate a structured 5-round mock interview.${companyBlock}
 
 Each round has a specific purpose:
 1. "intro" - Self introduction (1 question: "Tell me about yourself")

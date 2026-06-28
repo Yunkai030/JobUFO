@@ -3,7 +3,7 @@ import { getResumes } from '@/lib/resume/queries'
 import { getInterviewPreps } from '@/lib/interview/actions'
 import { getMockInterviews } from '@/lib/mock-interview/actions'
 import { InterviewPrepForm } from '@/components/interview/interview-prep-form'
-import { Mic, ArrowRight } from 'lucide-react'
+import { Mic, ArrowRight, Building2 } from 'lucide-react'
 
 export default async function InterviewPage() {
   const [resumes, preps, mockInterviews] = await Promise.all([
@@ -62,6 +62,23 @@ export default async function InterviewPage() {
           </div>
         </div>
       </div>
+
+      {/* Company insights entry */}
+      <Link
+        href="/dashboard/interview/companies"
+        className="group flex items-center gap-4 rounded-2xl border bg-card p-5 transition-all duration-200 hover:shadow-lg hover:shadow-foreground/[0.03] hover:-translate-y-0.5"
+      >
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent transition-all duration-200 group-hover:bg-foreground group-hover:text-background">
+          <Building2 className="size-5" />
+        </div>
+        <div className="flex-1">
+          <p className="text-sm font-semibold">Company Insights</p>
+          <p className="text-xs text-muted-foreground">
+            Real interview experiences, distilled by AI — and used to flavor your mock interviews
+          </p>
+        </div>
+        <ArrowRight className="size-4 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5" />
+      </Link>
 
       <InterviewPrepForm resumes={resumes} initialPreps={preps} />
     </div>

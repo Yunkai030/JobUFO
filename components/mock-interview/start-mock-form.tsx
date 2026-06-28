@@ -14,12 +14,13 @@ import { Mic, Sparkles } from 'lucide-react'
 
 interface Props {
   resumes: Resume[]
+  defaultCompany?: string
 }
 
-export function StartMockForm({ resumes }: Props) {
+export function StartMockForm({ resumes, defaultCompany = '' }: Props) {
   const router = useRouter()
   const [selectedResumeId, setSelectedResumeId] = useState(resumes[0]?.id ?? '')
-  const [company, setCompany] = useState('')
+  const [company, setCompany] = useState(defaultCompany)
   const [role, setRole] = useState('')
   const [jobDescription, setJobDescription] = useState('')
   const [error, setError] = useState('')
@@ -52,7 +53,8 @@ export function StartMockForm({ resumes }: Props) {
       <CardHeader>
         <CardTitle>Start Mock Interview</CardTitle>
         <CardDescription>
-          AI will act as your interviewer with 5 structured rounds tailored to your resume and the job.
+          AI acts as your interviewer with 5 structured rounds tailored to your resume and the job.
+          If the company has shared experiences, the questions match its real reported style.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
