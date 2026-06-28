@@ -226,6 +226,36 @@
   pointer-events: none;
 }
 
+/* ── Legal document prose ── */
+.legal-prose {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--muted-foreground);
+}
+.legal-prose h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+}
+.legal-prose h2 {
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+.legal-prose p { margin-bottom: 0.75rem; }
+.legal-prose ul {
+  margin-bottom: 0.75rem;
+  margin-left: 1.25rem;
+  list-style: disc;
+}
+.legal-prose li { margin-bottom: 0.25rem; }
+.legal-prose strong { color: var(--foreground); font-weight: 500; }
+.legal-prose a { color: var(--primary); text-underline-offset: 4px; }
+.legal-prose a:hover { text-decoration: underline; }
+
 /* ── Glass card ── */
 .glass {
   background: oklch(1 0 0 / 70%);

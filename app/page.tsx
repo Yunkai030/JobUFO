@@ -189,6 +189,10 @@ export default async function Home() {
           <span className="font-medium text-foreground">JobUFO</span>
         </div>
         <p className="mt-1.5">Your job application OS. © {new Date().getFullYear()}</p>
+        <div className="mt-2 flex items-center justify-center gap-4">
+          <Link href="/privacy" className="hover:text-foreground">Privacy</Link>
+          <Link href="/terms" className="hover:text-foreground">Terms</Link>
+        </div>
       </footer>
     </div>
   )
