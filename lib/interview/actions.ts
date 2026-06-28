@@ -48,7 +48,7 @@ Generate exactly 10 questions with a mix of types:
 - 4 technical questions (based on required skills and technologies in the JD)
 - 2 situational questions (hypothetical scenarios relevant to the role)
 
-For each question, tailor it to the specific gap or strength between the resume and JD.
+For each question, tailor it to the specific gap or strength between the resume and JD — reference the candidate's actual experience or a specific JD requirement, not generic phrasing. Tips must be concrete and actionable (e.g. "Lead with the metric: you grew X by Y%"), never generic ("be confident").
 
 Respond with valid JSON only, using this schema:
 {
@@ -85,6 +85,7 @@ export async function generateInterviewPrep(
   const completion = await groq.chat.completions.create({
     model: 'llama-3.3-70b-versatile',
     max_tokens: 4096,
+    temperature: 0.5,
     response_format: { type: 'json_object' },
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },

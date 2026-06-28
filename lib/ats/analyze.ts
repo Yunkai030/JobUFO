@@ -83,6 +83,7 @@ export async function runATSCheck(
   const chatCompletion = await groq.chat.completions.create({
     model: 'llama-3.3-70b-versatile',
     max_tokens: 2048,
+    temperature: 0.3, // low → consistent, calibrated scores across runs
     response_format: { type: 'json_object' },
     messages: [
       { role: 'system', content: ATS_SYSTEM_PROMPT },

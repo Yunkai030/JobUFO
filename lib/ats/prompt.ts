@@ -34,8 +34,11 @@ You MUST respond with valid JSON only, no markdown, no explanation outside the J
 
 Rules:
 - Be strict but fair. Most resumes should score 40-75 against a specific JD.
-- Provide 3-8 specific, actionable suggestions. Each suggestion should reference a specific section and explain exactly what to add or change.
-- Missing keywords should only include terms that are realistically addable (don't suggest adding skills the candidate clearly doesn't have — instead suggest rephrasing existing experience to better match).
+- Provide 3-6 suggestions. CRITICAL: every suggestion must be grounded in THIS resume — quote the exact phrase you are improving and give a concrete rewritten version. Never give generic advice.
+  BAD (generic, never do this): "Quantify your achievements with metrics."
+  GOOD (specific, always do this): "Rewrite 'Fixed bugs and improved the UI' → 'Resolved 30+ production bugs and cut initial load time 25% via code-splitting'."
+- For a missing keyword the candidate plausibly has exposure to, point to the exact resume phrase to rephrase so it surfaces — don't tell them to add skills they clearly don't have.
+- Each suggestion must reference a section and a priority.
 - Always extract job_title and company from the JD if available.`
 
 export function buildUserMessage(resumeData: string, jobDescription: string): string {

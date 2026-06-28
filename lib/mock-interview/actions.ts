@@ -41,13 +41,14 @@ function resumeToText(r: ResumeWithSections): string {
   return lines.join('\n')
 }
 
-async function callAI(systemPrompt: string, userMessage: string) {
+async function callAI(systemPrompt: string, userMessage: string, temperature = 0.4) {
   const apiKey = process.env.GROQ_API_KEY
   if (!apiKey) throw new Error('Groq API key not configured')
   const groq = new Groq({ apiKey })
   const completion = await groq.chat.completions.create({
     model: 'llama-3.3-70b-versatile',
     max_tokens: 4096,
+    temperature,
     response_format: { type: 'json_object' },
     messages: [
       { role: 'system', content: systemPrompt },
@@ -114,7 +115,8 @@ Respond with JSON:
 
   const response = await callAI(
     systemPrompt,
-    `Resume:\n${resumeText}\n\nJob Description:\n${jobDescription}`
+    `Resume:\n${resumeText}\n\nJob Description:\n${jobDescription}`,
+    0.6 // higher → varied, realistic question sets
   )
 
   let parsed: { rounds: MockRound[] }
@@ -178,8 +180,10 @@ The question was: "${question.question}"
 The candidate answered: "${answer}"
 
 Evaluate the answer and provide:
-1. A score from 0-100
-2. Constructive feedback (2-3 sentences): what was good, what could be improved, and a specific suggestion
+1. A score from 0-100 (be calibrated: a vague or generic answer scores 30-50; a specific answer with concrete examples scores 70-90).
+2. Constructive feedback (2-3 sentences). CRITICAL: quote a specific part of the candidate's actual answer, then give one concrete improvement. Never give generic advice that would apply to any answer.
+   BAD (generic): "Try to be more specific and use the STAR method."
+   GOOD (specific): "You said 'I worked on a hard project' — name the project, your exact role, and the measurable result, e.g. 'cut checkout latency 30%'."
 
 For behavioral questions, evaluate using STAR method (Situation, Task, Action, Result).
 For technical questions, evaluate correctness, depth, and clarity.
@@ -192,7 +196,7 @@ Respond with JSON:
   "feedback": "your feedback here"
 }`
 
-  const response = await callAI(systemPrompt, answer)
+  const response = await callAI(systemPrompt, answer, 0.3)
 
   let parsed: { score: number; feedback: string }
   try {
@@ -293,7 +297,8 @@ Respond with JSON:
 
   const response = await callAI(
     systemPrompt,
-    JSON.stringify(roundsSummary)
+    JSON.stringify(roundsSummary),
+    0.3 // low → consistent final scoring
   )
 
   let report: MockReport
