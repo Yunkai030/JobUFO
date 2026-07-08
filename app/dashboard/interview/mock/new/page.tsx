@@ -1,6 +1,6 @@
+import Link from 'next/link'
 import { getResumes } from '@/lib/resume/queries'
 import { StartMockForm } from '@/components/mock-interview/start-mock-form'
-import Link from 'next/link'
 
 export default async function NewMockInterviewPage({
   searchParams,
@@ -12,11 +12,11 @@ export default async function NewMockInterviewPage({
   return (
     <div className="mx-auto max-w-3xl space-y-4">
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Link href="/dashboard/interview/mock" className="hover:text-foreground transition-colors">
-          Mock Interviews
+        <Link href="/dashboard/interview" className="transition-colors hover:text-foreground">
+          Practice
         </Link>
         <span>/</span>
-        <span className="text-foreground">New</span>
+        <span className="text-foreground">New camera-on session</span>
       </div>
 
       <StartMockForm resumes={resumes} defaultCompany={company ?? ''} />

@@ -3,7 +3,7 @@
  * only reference their Price IDs (set as env vars) and describe them for the UI.
  *
  * Create two recurring Prices in Stripe (monthly + yearly) under one Product
- * called "JobUFO Pro", then paste their price IDs into these env vars.
+ * called "InterviewMirror Pro", then paste their price IDs into these env vars.
  */
 export type PlanInterval = 'monthly' | 'yearly'
 
@@ -40,7 +40,7 @@ export const PLANS: Plan[] = [
 
 export const PRO_FEATURES = [
   'Unlimited ATS checks',
-  'Unlimited mock interviews',
+  'Unlimited camera-on practice sessions',
   'Unlimited AI interview prep',
   'Priority AI processing',
   'PDF resume export',

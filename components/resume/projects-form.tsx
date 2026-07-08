@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import type { Project } from '@/lib/types/resume'
 import { Input } from '@/components/ui/input'
@@ -37,7 +37,7 @@ export function ProjectsForm({ items, onChange, onAdd, onDelete }: Props) {
               <Input
                 value={item.name ?? ''}
                 onChange={(e) => onChange(i, { name: e.target.value })}
-                placeholder="JobUFO"
+                placeholder="InterviewMirror"
               />
             </div>
             <div className="grid gap-1.5">
@@ -63,7 +63,7 @@ export function ProjectsForm({ items, onChange, onAdd, onDelete }: Props) {
               rows={3}
               value={item.description ?? ''}
               onChange={(e) => onChange(i, { description: e.target.value })}
-              placeholder="• Built a full-stack app that...&#10;• Implemented..."
+              placeholder={'- Built a full-stack app that...\n- Implemented...'}
             />
           </div>
         </div>

@@ -27,7 +27,7 @@ export default async function CompaniesPage() {
             <Building2 className="size-5 text-muted-foreground" />
           </div>
           <p className="text-sm text-muted-foreground">
-            No experiences yet. Be the first to share one — it powers company-flavored mock interviews.
+            No experiences yet. Be the first to share one — it powers company-flavored practice sessions.
           </p>
         </div>
       ) : (

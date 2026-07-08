@@ -52,7 +52,7 @@ export function SubmitExperienceForm() {
           <div>
             <CardTitle>Share an interview experience</CardTitle>
             <CardDescription>
-              Help others (and improve your own company-flavored mock interviews). AI extracts the key points automatically.
+              Help others and improve your own company-flavored practice sessions. AI extracts the key points automatically.
             </CardDescription>
           </div>
           <Button variant="ghost" size="icon-sm" onClick={() => setOpen(false)}>

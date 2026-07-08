@@ -1,7 +1,7 @@
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getMockInterview } from '@/lib/mock-interview/actions'
 import { MockSession } from '@/components/mock-interview/mock-session'
-import Link from 'next/link'
 
 export default async function MockInterviewSessionPage({
   params,
@@ -14,13 +14,13 @@ export default async function MockInterviewSessionPage({
 
   return (
     <div className="space-y-4">
-      <div className="mx-auto max-w-3xl flex items-center gap-2 text-sm text-muted-foreground">
-        <Link href="/dashboard/interview/mock" className="hover:text-foreground transition-colors">
-          Mock Interviews
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Link href="/dashboard/interview/mock" className="transition-colors hover:text-foreground">
+          Practice sessions
         </Link>
         <span>/</span>
         <span className="text-foreground">
-          {interview.role} @ {interview.company}
+          {interview.role} at {interview.company}
         </span>
       </div>
 

@@ -53,7 +53,7 @@ export function PricingCards() {
         <div className="flex items-center gap-2">
           <Sparkles className="size-5" />
           <span className="text-sm font-semibold uppercase tracking-wider opacity-80">
-            JobUFO Pro
+            InterviewMirror Pro
           </span>
         </div>
 

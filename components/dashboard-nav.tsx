@@ -8,7 +8,7 @@ import {
   FileText,
   Target,
   BarChart3,
-  Mic,
+  Camera,
   Sparkles,
   CreditCard,
   LineChart,
@@ -19,7 +19,7 @@ const NAV_ITEMS = [
   { href: '/dashboard/resumes', label: 'Resumes', icon: FileText },
   { href: '/dashboard/ats', label: 'ATS Check', icon: Target },
   { href: '/dashboard/tracker', label: 'Tracker', icon: BarChart3 },
-  { href: '/dashboard/interview', label: 'Interview', icon: Mic },
+  { href: '/dashboard/interview', label: 'Practice', icon: Camera },
   { href: '/dashboard/billing', label: 'Billing', icon: CreditCard },
 ]
 
@@ -34,9 +34,9 @@ export function Sidebar({ isVip = false, isAdmin = false }: { isVip?: boolean; i
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-5 py-5">
         <div className="flex size-8 items-center justify-center rounded-lg bg-foreground text-background">
-          <Sparkles className="size-4" />
+          <Camera className="size-4" />
         </div>
-        <span className="text-lg font-bold tracking-tight">JobUFO</span>
+        <span className="text-lg font-bold tracking-tight">InterviewMirror</span>
       </div>
 
       {/* Nav */}
@@ -85,9 +85,9 @@ export function Sidebar({ isVip = false, isAdmin = false }: { isVip?: boolean; i
           </Link>
         ) : (
           <div className="glow-border rounded-xl bg-gradient-to-br from-foreground to-foreground/85 p-4 text-background">
-            <p className="text-xs font-semibold">JobUFO Pro</p>
+            <p className="text-xs font-semibold">InterviewMirror Pro</p>
             <p className="mt-0.5 text-[11px] leading-relaxed opacity-60">
-              Unlimited AI features &amp; priority support
+              Unlimited camera-on practice sessions
             </p>
             <Link
               href="/dashboard/billing"

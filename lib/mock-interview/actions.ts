@@ -79,7 +79,7 @@ export async function startMockInterview(
       .eq('user_id', user.id)
     if ((count ?? 0) >= FREE_LIMITS.mockInterviewsTotal) {
       return {
-        error: `Free plan includes ${FREE_LIMITS.mockInterviewsTotal} mock interview. Upgrade to Pro for unlimited practice.`,
+        error: `Free plan includes ${FREE_LIMITS.mockInterviewsTotal} practice session. Upgrade to Pro for unlimited practice.`,
       }
     }
   }

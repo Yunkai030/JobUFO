@@ -3,7 +3,7 @@ import { getResumes } from '@/lib/resume/queries'
 import { getInterviewPreps } from '@/lib/interview/actions'
 import { getMockInterviews } from '@/lib/mock-interview/actions'
 import { InterviewPrepForm } from '@/components/interview/interview-prep-form'
-import { Mic, ArrowRight, Building2 } from 'lucide-react'
+import { Camera, ArrowRight, Building2 } from 'lucide-react'
 
 export default async function InterviewPage() {
   const [resumes, preps, mockInterviews] = await Promise.all([
@@ -18,23 +18,23 @@ export default async function InterviewPage() {
   return (
     <div className="max-w-3xl space-y-6">
       <div className="animate-fade-up">
-        <h1 className="text-2xl font-bold tracking-tight">Interview Prep</h1>
+        <h1 className="text-2xl font-bold tracking-tight">InterviewMirror</h1>
         <p className="text-sm text-muted-foreground">
-          Practice and prepare for interviews
+          Practice until being on camera feels normal.
         </p>
       </div>
 
-      {/* Mock Interview dark CTA */}
+      {/* Camera-on practice dark CTA */}
       <div className="glow-border animate-fade-up rounded-2xl bg-gradient-to-br from-foreground via-foreground/95 to-foreground/80 p-6 text-background">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="flex size-12 items-center justify-center rounded-xl bg-background/15">
-              <Mic className="size-6" />
+              <Camera className="size-6" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold">Mock Interview Agent</h2>
+              <h2 className="text-lg font-semibold">Camera-on practice room</h2>
               <p className="mt-0.5 text-sm opacity-70">
-                5 structured rounds with real-time AI feedback and scoring
+                Turn on your camera, answer realistic questions, and review where you freeze.
               </p>
               {(inProgressCount > 0 || completedCount > 0) && (
                 <p className="mt-2 text-xs opacity-50">
@@ -50,7 +50,7 @@ export default async function InterviewPage() {
               href="/dashboard/interview/mock/new"
               className="inline-flex items-center gap-1.5 rounded-lg bg-background px-4 py-2 text-sm font-medium text-foreground transition-opacity hover:opacity-90"
             >
-              Start
+              Start practice
               <ArrowRight className="size-3.5" />
             </Link>
             <Link
@@ -74,7 +74,7 @@ export default async function InterviewPage() {
         <div className="flex-1">
           <p className="text-sm font-semibold">Company Insights</p>
           <p className="text-xs text-muted-foreground">
-            Real interview experiences, distilled by AI — and used to flavor your mock interviews
+            Real interview experiences, distilled by AI, and used to flavor your practice sessions
           </p>
         </div>
         <ArrowRight className="size-4 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5" />

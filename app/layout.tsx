@@ -15,8 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "JobUFO — Your Job Application OS",
-  description: "Resume builder, ATS checker, application tracker, and mock interview agent — your entire job-hunting workflow in one place.",
+  title: "InterviewMirror - Camera-on interview practice",
+  description:
+    "Practice realistic video interviews with your camera on, answer out loud, and get AI feedback before the real call.",
 };
 
 export default function RootLayout({

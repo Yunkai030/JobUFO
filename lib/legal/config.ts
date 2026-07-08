@@ -3,9 +3,9 @@
  * Review these with a legal advisor before relying on the documents.
  */
 export const LEGAL = {
-  appName: 'JobUFO',
+  appName: 'InterviewMirror',
   // If/when you register a business, replace with the registered entity name.
-  legalEntity: 'JobUFO',
+  legalEntity: 'InterviewMirror',
   // Public contact for privacy/legal requests.
   contactEmail: 'yunkai.huang730@gmail.com',
   // TODO: confirm your governing jurisdiction with a local advisor.

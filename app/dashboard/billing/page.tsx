@@ -19,7 +19,7 @@ export default async function BillingPage({
         <p className="mt-1 text-sm text-muted-foreground">
           {subscription.isVip
             ? 'Manage your plan and billing details.'
-            : 'Unlock unlimited AI features and supercharge your job search.'}
+            : 'Unlock unlimited camera-on practice and interview coaching.'}
         </p>
       </div>
 

@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { LEGAL } from '@/lib/legal/config'
 
 export const metadata: Metadata = {
-  title: 'Terms of Service — JobUFO',
-  description: 'The terms governing your use of JobUFO.',
+  title: 'Terms of Service — InterviewMirror',
+  description: 'The terms governing your use of InterviewMirror.',
 }
 
 export default function TermsPage() {

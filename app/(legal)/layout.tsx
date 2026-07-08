@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Sparkles, ArrowLeft } from 'lucide-react'
+import { Camera, ArrowLeft } from 'lucide-react'
 
 export default function LegalLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -8,9 +8,9 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-3">
           <Link href="/" className="flex items-center gap-2.5">
             <div className="flex size-8 items-center justify-center rounded-lg bg-foreground text-background">
-              <Sparkles className="size-4" />
+              <Camera className="size-4" />
             </div>
-            <span className="text-lg font-bold tracking-tight">JobUFO</span>
+            <span className="text-lg font-bold tracking-tight">InterviewMirror</span>
           </Link>
           <Link
             href="/"

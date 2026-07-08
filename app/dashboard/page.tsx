@@ -2,11 +2,10 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getResumes } from '@/lib/resume/queries'
 import { getApplications } from '@/lib/application/actions'
-import { getMockInterviews } from '@/lib/mock-interview/actions'
 import {
   FileText,
   Target,
-  Mic,
+  Camera,
   BarChart3,
   ArrowRight,
 } from 'lucide-react'
@@ -17,10 +16,9 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const [resumes, applications, mockInterviews] = await Promise.all([
+  const [resumes, applications] = await Promise.all([
     getResumes(),
     getApplications(),
-    getMockInterviews(),
   ])
 
   const firstName = user?.email?.split('@')[0] ?? 'there'
@@ -37,7 +35,7 @@ export default async function DashboardPage() {
           Hey, {firstName}
         </h1>
         <p className="mt-1 text-muted-foreground">
-          Here&apos;s your job search overview.
+          Practice video interviews until the camera feels normal.
         </p>
       </div>
 
@@ -55,15 +53,15 @@ export default async function DashboardPage() {
           {/* Mini activity bar */}
           <div className="mt-6 flex items-center gap-1">
             {Array.from({ length: 28 }).map((_, i) => {
-              const intensity = Math.random()
+              const intensity = (i * 7 + applications.length * 3 + resumes.length) % 10
               return (
                 <div
                   key={i}
                   className="h-6 flex-1 rounded-sm transition-colors"
                   style={{
-                    backgroundColor: intensity > 0.7
+                    backgroundColor: intensity > 6
                       ? 'oklch(0.50 0.18 265 / 0.5)'
-                      : intensity > 0.3
+                      : intensity > 2
                       ? 'oklch(0.50 0.18 265 / 0.15)'
                       : 'oklch(0.50 0.18 265 / 0.04)',
                   }}
@@ -74,22 +72,22 @@ export default async function DashboardPage() {
           <p className="mt-2 text-[11px] text-muted-foreground">Last 4 weeks of activity</p>
         </div>
 
-        {/* Mock interview CTA - dark card */}
+        {/* Camera-on interview CTA - dark card */}
         <div className="glow-border rounded-2xl bg-gradient-to-br from-foreground via-foreground/95 to-foreground/80 p-6 text-background flex flex-col justify-between">
           <div>
             <div className="flex size-10 items-center justify-center rounded-xl bg-background/15">
-              <Mic className="size-5" />
+              <Camera className="size-5" />
             </div>
-            <h3 className="mt-4 font-semibold">Mock Interview</h3>
+            <h3 className="mt-4 font-semibold">InterviewMirror</h3>
             <p className="mt-1 text-sm leading-relaxed opacity-60">
-              Practice with an AI interviewer. Get scored in real time.
+              Turn on your camera, answer realistic questions, and learn where you freeze.
             </p>
           </div>
           <Link
             href="/dashboard/interview/mock/new"
             className="group mt-5 inline-flex items-center gap-1.5 rounded-lg bg-background/15 px-4 py-2 text-sm font-medium transition-colors hover:bg-background/25 self-start"
           >
-            Start
+            Start practice
             <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>

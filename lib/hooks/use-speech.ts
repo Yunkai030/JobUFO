@@ -47,15 +47,17 @@ function getRecognitionCtor(): SpeechRecognitionCtor | null {
  * `interim` holds the in-progress (not-yet-final) words for live display.
  */
 export function useSpeechRecognition(onFinal: (text: string) => void, lang = 'en-US') {
-  const [supported, setSupported] = useState(false)
+  const [supported] = useState(() => getRecognitionCtor() !== null)
   const [listening, setListening] = useState(false)
   const [interim, setInterim] = useState('')
   const recRef = useRef<SpeechRecognitionLike | null>(null)
   const onFinalRef = useRef(onFinal)
-  onFinalRef.current = onFinal
 
   useEffect(() => {
-    setSupported(getRecognitionCtor() !== null)
+    onFinalRef.current = onFinal
+  }, [onFinal])
+
+  useEffect(() => {
     return () => recRef.current?.stop()
   }, [])
 
@@ -100,11 +102,10 @@ export function useSpeechRecognition(onFinal: (text: string) => void, lang = 'en
 
 /** Text-to-speech via the browser. */
 export function useSpeechSynthesis() {
-  const [supported, setSupported] = useState(false)
+  const [supported] = useState(() => typeof window !== 'undefined' && 'speechSynthesis' in window)
   const [speaking, setSpeaking] = useState(false)
 
   useEffect(() => {
-    setSupported(typeof window !== 'undefined' && 'speechSynthesis' in window)
     return () => window.speechSynthesis?.cancel()
   }, [])
 

@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { LEGAL } from '@/lib/legal/config'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — JobUFO',
-  description: 'How JobUFO collects, uses, and protects your data.',
+  title: 'Privacy Policy — InterviewMirror',
+  description: 'How InterviewMirror collects, uses, and protects your data.',
 }
 
 export default function PrivacyPage() {
@@ -55,7 +55,7 @@ export default function PrivacyPage() {
 
       <h2>3. AI processing</h2>
       <p>
-        Core features (ATS checks, interview preparation, and mock interviews) work by sending your
+        Core features (ATS checks, interview preparation, and camera-on practice sessions) work by sending your
         resume content and the job descriptions you provide to a third-party AI provider (Groq) for
         analysis. Only the content needed to generate your results is sent. Do not enter information
         you are not comfortable processing this way. We do not use your content to train our own

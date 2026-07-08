@@ -14,7 +14,7 @@ export default function LoginPage() {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle className="text-xl">Log in to JobUFO</CardTitle>
+        <CardTitle className="text-xl">Log in to InterviewMirror</CardTitle>
         <CardDescription>Enter your email and password</CardDescription>
       </CardHeader>
       <CardContent>

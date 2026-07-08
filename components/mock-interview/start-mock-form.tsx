@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Mic, Sparkles } from 'lucide-react'
+import { Camera, Sparkles } from 'lucide-react'
 
 interface Props {
   resumes: Resume[]
@@ -51,10 +51,10 @@ export function StartMockForm({ resumes, defaultCompany = '' }: Props) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Start Mock Interview</CardTitle>
+        <CardTitle>Prepare a camera-on interview</CardTitle>
         <CardDescription>
-          AI acts as your interviewer with 5 structured rounds tailored to your resume and the job.
-          If the company has shared experiences, the questions match its real reported style.
+          InterviewMirror creates a realistic video interview room tailored to your resume,
+          the role, and real company interview signals when available.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
@@ -80,7 +80,7 @@ export function StartMockForm({ resumes, defaultCompany = '' }: Props) {
               id="mock-company"
               value={company}
               onChange={(e) => setCompany(e.target.value)}
-              placeholder="e.g. Google"
+              placeholder="e.g. Canva"
             />
           </div>
           <div className="grid gap-1.5">
@@ -101,7 +101,7 @@ export function StartMockForm({ resumes, defaultCompany = '' }: Props) {
             rows={6}
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
-            placeholder="Paste the full job description here..."
+            placeholder="Paste the job description so your interviewer can ask role-specific follow-ups..."
           />
         </div>
 
@@ -127,8 +127,8 @@ export function StartMockForm({ resumes, defaultCompany = '' }: Props) {
             'Generating interview... (15-30s)'
           ) : (
             <>
-              <Mic className="size-4" />
-              Start Mock Interview
+              <Camera className="size-4" />
+              Enter practice room
             </>
           )}
         </Button>

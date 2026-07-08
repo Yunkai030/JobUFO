@@ -1,6 +1,6 @@
-# JobUFO
+# InterviewMirror
 
-All-in-one job application OS â€” resume builder + ATS checker + auto-fill + tracker + Sankey analytics.
+All-in-one job application OS â€?resume builder + ATS checker + auto-fill + tracker + Sankey analytics.
 
 ## Stack
 
@@ -25,6 +25,6 @@ Open <http://localhost:3000>.
 
 This repo is built with three Claude Code subagents in `.claude/agents/`:
 
-- **planner** â€” drafts a per-task plan, waits for confirmation
-- **coder** â€” implements after plan is approved
-- **tester** â€” verifies (typecheck + lint + unit + integration)
+- **planner** â€?drafts a per-task plan, waits for confirmation
+- **coder** â€?implements after plan is approved
+- **tester** â€?verifies (typecheck + lint + unit + integration)
